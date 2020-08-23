@@ -44,67 +44,45 @@ void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t enable_flag) {
 
 // Peripheral Init
 void SPI_Init(SPI_Handle_t *pSPIHandle) {
-//	typedef struct {
-//		uint8_t SPI_DeviceMode;						// see @SPI_DEVICE_MODES
-//		uint8_t SPI_BusConfig;						// see @SPI_BUS_CONFIGURATION
-//		uint8_t SPI_SerialClkSpeed;					// see @SPI_SERIAL_CLOCK_SPEED
-//		uint8_t SPI_DataFrameFormat;				// see @SPI_DATA_FRAME_FORMAT
-//		uint8_t SPI_CPOL;							// see @SPI_CLOCK_POLARITY
-//		uint8_t SPI_CPHA;							// see @SPI_CLOCK_PHASE
-//		uint8_t SPI_SoftwareSlaveManagement;		// see @SPI_SOFTWARE_SLAVE_MANAGEMENT
-//	} SPI_Config_t;
-	uint32_t curr_reg = 0;
+
+	uint32_t reg_data = 0;
 
 	// 1. configure device mode
-	if (pSPIHandle->SPI_Config.SPI_DeviceMode == SPI_DEVICE_MODE_MASTER) {
-		pSPIHandle->pSPIx->CR1 &= (0 << 2);
-		pSPIHandle->pSPIx->CR1 |= (1 << 2);
-	}
-	else {
-		pSPIHandle->pSPIx->CR1 &= (0 << 2);
-	}
+	reg_data |= pSPIHandle->SPI_Config.SPI_DeviceMode << SPI_CR1_MSTR;
 
 	// 2. init spi bus configuration
 	if (pSPIHandle->SPI_Config.SPI_BusConfig == SPI_BUS_CONFIG_DUPLEX) {
-		// enable bidirectional mode
-		pSPIHandle->pSPIx->CR1 &= ~(1 << 15);
-
-		// seems that BIDIOE will need to be toggled when reading and writing
-
-		// keep RXONLY clear when bidirectional mode is active
-		pSPIHandle->pSPIx->CR1 &= ~(1 << 10);
-
+		// clear bidirectional mode
+		reg_data &= ~(1 << SPI_CR1_BIDIMODE);
 	}
 	else if (pSPIHandle->SPI_Config.SPI_BusConfig == SPI_BUS_CONFIG_HALF_DUPLEX) {
 		// enable bidirectional mode
-		pSPIHandle->pSPIx->CR1 &= ~(1 << 15);
-		pSPIHandle->pSPIx->CR1 |= (1 << 15);
-
-		// seems that BIDIOE will need to be toggled when reading and writing
-
 		// keep RXONLY clear when bidirectional mode is active
-		pSPIHandle->pSPIx->CR1 &= ~(1 << 10);
+		reg_data |= (1 << SPI_CR1_BIDIMODE);
 	}
 	else if (pSPIHandle->SPI_Config.SPI_BusConfig == SPI_BUS_CONFIG_SIMPLEX_RX_ONLY) {
 		// RXONLY and BIDIMODE can't be set at the same time, so configure RXONLY
-		pSPIHandle->pSPIx->CR1 &= ~(1 << 15);
-		pSPIHandle->pSPIx->CR1 &= ~(1 << 14);
-
 		// handle RXONLY
-		pSPIHandle->pSPIx->CR1 &= ~(1 << 10);
-		pSPIHandle->pSPIx->CR1 |= (1 << 10);
+//		reg_data &= ~(1 << SPI_CR1_BIDIMODE);
+		reg_data |= (1 << SPI_CR1_RXONLY);
 	}
 
 	// 3. set clock speed
-
+	reg_data |= (pSPIHandle->SPI_Config.SPI_SerialClkSpeed << SPI_CR1_BR);
 
 	// 4. set data frame format
+	reg_data |= (pSPIHandle->SPI_Config.SPI_DataFrameFormat << SPI_CR1_DFF);
 
 	// 5. set cpol
+	reg_data |= (pSPIHandle->SPI_Config.SPI_CPOL << SPI_CR1_CPOL);
 
 	// 6. set cpha
+	reg_data |= (pSPIHandle->SPI_Config.SPI_CPHA<< SPI_CR1_CPHA);
 
 	// 7. configure software slave management
+	reg_data |= (pSPIHandle->SPI_Config.SPI_SoftwareSlaveManagement<< SPI_CR1_SSM);
+
+	pSPIHandle->pSPIx->CR1 = reg_data;
 }
 void SPI_DeInit(SPI_Config_t *pSPIx);
 

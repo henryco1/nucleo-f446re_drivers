@@ -294,7 +294,7 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0xef drivers/Src/stm32f446xx_gpio_driver.o
  .debug_macro   0x0000000000000000       0x6a drivers/Src/stm32f446xx_gpio_driver.o
  .debug_macro   0x0000000000000000      0x1df drivers/Src/stm32f446xx_gpio_driver.o
- .debug_macro   0x0000000000000000      0x3ca drivers/Src/stm32f446xx_gpio_driver.o
+ .debug_macro   0x0000000000000000      0x42c drivers/Src/stm32f446xx_gpio_driver.o
  .debug_macro   0x0000000000000000       0xd0 drivers/Src/stm32f446xx_gpio_driver.o
  .group         0x0000000000000000        0xc drivers/Src/stm32f446xx_spi_driver.o
  .group         0x0000000000000000        0xc drivers/Src/stm32f446xx_spi_driver.o
@@ -312,7 +312,7 @@ Discarded input sections
  .text.SPI_PeriClockControl
                 0x0000000000000000       0xd8 drivers/Src/stm32f446xx_spi_driver.o
  .text.SPI_Init
-                0x0000000000000000       0xfa drivers/Src/stm32f446xx_spi_driver.o
+                0x0000000000000000       0xa6 drivers/Src/stm32f446xx_spi_driver.o
  .debug_info    0x0000000000000000      0x3da drivers/Src/stm32f446xx_spi_driver.o
  .debug_abbrev  0x0000000000000000       0xd7 drivers/Src/stm32f446xx_spi_driver.o
  .debug_aranges
@@ -326,11 +326,11 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0xef drivers/Src/stm32f446xx_spi_driver.o
  .debug_macro   0x0000000000000000       0x6a drivers/Src/stm32f446xx_spi_driver.o
  .debug_macro   0x0000000000000000      0x1df drivers/Src/stm32f446xx_spi_driver.o
- .debug_macro   0x0000000000000000      0x3ca drivers/Src/stm32f446xx_spi_driver.o
+ .debug_macro   0x0000000000000000      0x42c drivers/Src/stm32f446xx_spi_driver.o
  .debug_macro   0x0000000000000000       0xd0 drivers/Src/stm32f446xx_spi_driver.o
  .debug_macro   0x0000000000000000       0x82 drivers/Src/stm32f446xx_spi_driver.o
- .debug_line    0x0000000000000000      0x48f drivers/Src/stm32f446xx_spi_driver.o
- .debug_str     0x0000000000000000     0x5a96 drivers/Src/stm32f446xx_spi_driver.o
+ .debug_line    0x0000000000000000      0x47e drivers/Src/stm32f446xx_spi_driver.o
+ .debug_str     0x0000000000000000     0x5b78 drivers/Src/stm32f446xx_spi_driver.o
  .comment       0x0000000000000000       0x7c drivers/Src/stm32f446xx_spi_driver.o
  .debug_frame   0x0000000000000000       0x60 drivers/Src/stm32f446xx_spi_driver.o
  .ARM.attributes
@@ -719,7 +719,7 @@ OUTPUT(stm32-f446re_drivers.elf elf32-littlearm)
  .debug_ranges  0x0000000000000030       0x20 Startup/startup_stm32f446retx.o
  .debug_ranges  0x0000000000000050       0x60 drivers/Src/stm32f446xx_gpio_driver.o
 
-.debug_macro    0x0000000000000000     0x1e87
+.debug_macro    0x0000000000000000     0x1ee9
  .debug_macro   0x0000000000000000      0x15c Src/001led_toggle.o
  .debug_macro   0x000000000000015c      0xa66 Src/001led_toggle.o
  .debug_macro   0x0000000000000bc2       0x22 Src/001led_toggle.o
@@ -728,38 +728,38 @@ OUTPUT(stm32-f446re_drivers.elf elf32-littlearm)
  .debug_macro   0x0000000000000cc3       0xef Src/001led_toggle.o
  .debug_macro   0x0000000000000db2       0x6a Src/001led_toggle.o
  .debug_macro   0x0000000000000e1c      0x1df Src/001led_toggle.o
- .debug_macro   0x0000000000000ffb      0x3ca Src/001led_toggle.o
- .debug_macro   0x00000000000013c5       0xd0 Src/001led_toggle.o
- .debug_macro   0x0000000000001495       0x88 Src/001led_toggle.o
- .debug_macro   0x000000000000151d       0x46 Src/001led_toggle.o
- .debug_macro   0x0000000000001563       0x18 Src/001led_toggle.o
- .debug_macro   0x000000000000157b       0x3c Src/001led_toggle.o
- .debug_macro   0x00000000000015b7       0x34 Src/001led_toggle.o
- .debug_macro   0x00000000000015eb      0x174 Src/001led_toggle.o
- .debug_macro   0x000000000000175f       0x52 Src/001led_toggle.o
- .debug_macro   0x00000000000017b1       0x1f Src/001led_toggle.o
- .debug_macro   0x00000000000017d0       0x43 Src/001led_toggle.o
- .debug_macro   0x0000000000001813       0x20 Src/001led_toggle.o
- .debug_macro   0x0000000000001833      0x1a3 Src/001led_toggle.o
- .debug_macro   0x00000000000019d6      0x330 Src/001led_toggle.o
- .debug_macro   0x0000000000001d06       0x10 Src/001led_toggle.o
- .debug_macro   0x0000000000001d16       0x35 Src/001led_toggle.o
- .debug_macro   0x0000000000001d4b       0x20 Src/001led_toggle.o
- .debug_macro   0x0000000000001d6b       0x9a drivers/Src/stm32f446xx_gpio_driver.o
- .debug_macro   0x0000000000001e05       0x82 drivers/Src/stm32f446xx_gpio_driver.o
+ .debug_macro   0x0000000000000ffb      0x42c Src/001led_toggle.o
+ .debug_macro   0x0000000000001427       0xd0 Src/001led_toggle.o
+ .debug_macro   0x00000000000014f7       0x88 Src/001led_toggle.o
+ .debug_macro   0x000000000000157f       0x46 Src/001led_toggle.o
+ .debug_macro   0x00000000000015c5       0x18 Src/001led_toggle.o
+ .debug_macro   0x00000000000015dd       0x3c Src/001led_toggle.o
+ .debug_macro   0x0000000000001619       0x34 Src/001led_toggle.o
+ .debug_macro   0x000000000000164d      0x174 Src/001led_toggle.o
+ .debug_macro   0x00000000000017c1       0x52 Src/001led_toggle.o
+ .debug_macro   0x0000000000001813       0x1f Src/001led_toggle.o
+ .debug_macro   0x0000000000001832       0x43 Src/001led_toggle.o
+ .debug_macro   0x0000000000001875       0x20 Src/001led_toggle.o
+ .debug_macro   0x0000000000001895      0x1a3 Src/001led_toggle.o
+ .debug_macro   0x0000000000001a38      0x330 Src/001led_toggle.o
+ .debug_macro   0x0000000000001d68       0x10 Src/001led_toggle.o
+ .debug_macro   0x0000000000001d78       0x35 Src/001led_toggle.o
+ .debug_macro   0x0000000000001dad       0x20 Src/001led_toggle.o
+ .debug_macro   0x0000000000001dcd       0x9a drivers/Src/stm32f446xx_gpio_driver.o
+ .debug_macro   0x0000000000001e67       0x82 drivers/Src/stm32f446xx_gpio_driver.o
 
 .debug_line     0x0000000000000000      0xcb8
  .debug_line    0x0000000000000000      0x5fb Src/001led_toggle.o
  .debug_line    0x00000000000005fb       0x84 Startup/startup_stm32f446retx.o
  .debug_line    0x000000000000067f      0x639 drivers/Src/stm32f446xx_gpio_driver.o
 
-.debug_str      0x0000000000000000     0x8d0b
- .debug_str     0x0000000000000000     0x89e9 Src/001led_toggle.o
-                                       0x8c57 (size before relaxing)
- .debug_str     0x00000000000089e9       0x31 Startup/startup_stm32f446retx.o
+.debug_str      0x0000000000000000     0x8ded
+ .debug_str     0x0000000000000000     0x8acb Src/001led_toggle.o
+                                       0x8d39 (size before relaxing)
+ .debug_str     0x0000000000008acb       0x31 Startup/startup_stm32f446retx.o
                                          0x7a (size before relaxing)
- .debug_str     0x0000000000008a1a      0x2f1 drivers/Src/stm32f446xx_gpio_driver.o
-                                       0x5c11 (size before relaxing)
+ .debug_str     0x0000000000008afc      0x2f1 drivers/Src/stm32f446xx_gpio_driver.o
+                                       0x5cf3 (size before relaxing)
 
 .comment        0x0000000000000000       0x7b
  .comment       0x0000000000000000       0x7b Src/001led_toggle.o
