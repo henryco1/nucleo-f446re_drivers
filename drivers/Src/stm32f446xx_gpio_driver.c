@@ -204,10 +204,6 @@ uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx) {
  * output: none
  */
 void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber, uint8_t value) {
-	// 	inefficient
-	//	pGPIOx->ODR &= ~(0xFF << pinNumber);
-	//	pGPIOx->ODR |= (value << pinNumber);
-
 	// if we have something to write we write it. Otherwise the value must be zero, so we just
 	// clear the reg
 	if (value == GPIO_PIN_SET) {

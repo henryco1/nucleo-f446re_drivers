@@ -38,27 +38,27 @@ typedef struct {
 /* @SPI_DEVICE_MODES
  * SPI Device Modes (master or slave)
  */
-#define SPI_MASTER 			0
-#define SPI_SLAVE			1
+#define SPI_DEVICE_MODE_MASTER 			1
+#define SPI_DEVICE_MODE_SLAVE			0
 
 /* @SPI_BUS_CONFIGURATION
  * SPI Bus Configuration
  */
-#define SPI_DUPLEX			0
-#define SPI_HALF_DUPLEX		1
-#define SPI_SIMPLEX			2
+#define SPI_BUS_CONFIG_DUPLEX					0
+#define SPI_BUS_CONFIG_HALF_DUPLEX				1
+#define SPI_BUS_CONFIG_SIMPLEX_RX_ONLY			2
 
 /* @SPI_SERIAL_CLOCK_SPEED
  * SPI Serial Clock Speed based on baud rate control
  */
-#define SPI_fPCLK_2 			0
-#define SPI_fPCLK_4 			1
-#define SPI_fPCLK_8 			2
-#define SPI_fPCLK_16 			3
-#define SPI_fPCLK_32 			4
-#define SPI_fPCLK_64 			5
-#define SPI_fPCLK_128 			6
-#define SPI_fPCLK_256 			7
+#define SPI_SCLK_FPCLK_2 			0
+#define SPI_SCLK_FPCLK_4 			1
+#define SPI_SCLK_FPCLK_8 			2
+#define SPI_SCLK_FPCLK_16 			3
+#define SPI_SCLK_FPCLK_32 			4
+#define SPI_SCLK_FPCLK_64 			5
+#define SPI_SCLK_FPCLK_128 			6
+#define SPI_SCLK_FPCLK_256 			7
 
 /* @SPI_DATA_FRAME_FORMAT
  * SPI Data Frame Format
@@ -69,26 +69,26 @@ typedef struct {
 /* @SPI_CLOCK_POLARITY
  * SPI CPOL
  */
-#define SPI_CPOL_0			0
-#define SPI_CPOL_1			1
+#define SPI_CPOL_LOW			0
+#define SPI_CPOL_HIGH			1
 
 /* @SPI_CLOCK_PHASE
  * SPI CPHA
  */
-#define SPI_CPHA_0			0
-#define SPI_CPHA_1			1
+#define SPI_CPHA_LOW			0
+#define SPI_CPHA_HIGH			1
 
 /* @SPI_SOFTWARE_SLAVE_MANAGEMENT
  * SPI Software Slave Management
  */
-#define SPI_SOFTWARE_SLAVE_DISABLED			0
-#define SPI_SOFTWARE_SLAVE_ENABLED			1
+#define SPI_SOFTWARE_SLAVE_DISABLE			0
+#define SPI_SOFTWARE_SLAVE_ENABLE			1
 
 /************************
  * Driver API
  ************************/
 // Clock Control
-void SPI_PeriClockControl(SPI_Config_t *pSPIx, uint8_t enable_flag);
+void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t enable_flag);
 
 // Peripheral Init
 void SPI_Init(SPI_Handle_t *pSPIHandle);
