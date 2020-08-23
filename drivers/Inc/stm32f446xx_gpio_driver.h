@@ -24,7 +24,6 @@ typedef struct {
 /********************************
  * Handle structure for GPIO pins
  ********************************/
-
 typedef struct {
 	GPIO_RegDef_t *pGPIOx; 						// base address pointer
 	GPIO_PinConfig_t GPIO_PinConfig; 			// holds GPIO pin configuration settings
@@ -89,7 +88,25 @@ typedef struct {
 #define GPIO_OTYPE_PUSH_PULL	0
 #define GPIO_OTYPE_OPEN_DRAIN	1
 
+/* @SYSCFG_GPIO_EXTI_CONFIGS
+ * GPIO to EXTI config mappings
+ */
+#define GPIO_BASEADDR_TO_EXTI_CONFIG(GPIOx) ((GPIOx == GPIOA) ? 0 :\
+											(GPIOx == GPIOB) ? 1 :\
+											(GPIOx == GPIOC) ? 2 :\
+											(GPIOx == GPIOD) ? 3 :\
+											(GPIOx == GPIOE) ? 4 :\
+											(GPIOx == GPIOF) ? 5 :\
+											(GPIOx == GPIOG) ? 6 :\
+											(GPIOx == GPIOH) ? 7 :0)
 
+/* @NVIC_IRQ_PRIORITY_CONFIGS
+ * IRQ number to NVIC config mappings
+ */
+#define IRQ_NUM_TO_NVIC_CONFIG(IRQx) 		((IRQx == 0) ? NVIC_IPR0 :\
+											(IRQx == 1) ? NVIC_IPR1 :\
+											(IRQx == 2) ? NVIC_IPR2 :\
+											(IRQx == 3) ? NVIC_IPR3 :0)
 
 /************************
  * Driver API
@@ -110,7 +127,8 @@ void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t value);
 void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber);
 
 // IRQ Config and ISR Handling
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t enable_flag);
+void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t enable_flag);
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 void GPIO_IRQHandling(uint8_t pinNumber); // note that the interrupt for that GPIO will be triggered and it knows what pin was activated
 
 #endif /* INC_STM32F446XX_GPIO_DRIVER_H_ */

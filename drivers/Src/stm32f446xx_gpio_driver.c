@@ -1,7 +1,6 @@
 /*
  * stm32f446xx_gpio_driver.c
  *
- *  Created on: Aug 6, 2020
  *      Author: henryco1
  */
 
@@ -81,12 +80,31 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG) {
 		curr_reg = (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
 		pGPIOHandle->pGPIOx->MODER &= ~(3 << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
-		// pGPIOHandle->pGPIOx->MODER &= ~(3 << pGPIOHandle->GPIO_PnConfig.GPIO_PinNumber));
 		pGPIOHandle->pGPIOx->MODER |= curr_reg;
 		curr_reg = 0;
 	}
 	else {
-		// TODO: handle interrupt mode later
+		if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_INPUT_FALLING_EDGE) {
+			// 1. configure FTSR
+			EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+			EXTI->RTSR &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+		} else if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_INPUT_RISING_EDGE) {
+			// 1. configure RTSR
+			EXTI->RTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+			EXTI->FTSR |= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+		} else if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_INPUT_RISING_EDGE_FALLING_EDGE) {
+			// 1. configure both FTSR and RTSR
+			EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+			EXTI->RTSR |= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+		}
+
+		// 2. configure the GPIO port selection in SYSCFG_EXTICR
+		uint8_t reg_index = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 4;
+		uint8_t pin_offset = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 4;
+		SYSCFG->EXTICR[reg_index] &= ~(GPIO_BASEADDR_TO_EXTI_CONFIG(pGPIOHandle->pGPIOx) << (4 * pin_offset));
+
+		// 3. enable the exti interrupt delivery using IMR (interrupt mask register)
+		EXTI->IMR |= 1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber;
 	}
 
 	// configure gpio speed
@@ -102,8 +120,8 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 	curr_reg = 0;
 
 	// configure op type
-	curr_reg = pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
-	pGPIOHandle->pGPIOx->OTYPER &= ~(1 << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+	curr_reg = pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber;
+	pGPIOHandle->pGPIOx->OTYPER &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
 	pGPIOHandle->pGPIOx->OTYPER |= curr_reg;
 	curr_reg = 0;
 
@@ -228,8 +246,38 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber) {
  * input3: a macro to enable/disable GPIO
  * output: none
  */
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t enable_flag) {
+void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t enable_flag) {
+	if (enable_flag == ENABLE) {
+		if (IRQNumber <= 31) {
+			*NVIC_ISER0 |= (1 << IRQNumber);
+		} else if (IRQNumber > 31 && IRQNumber < 64) {
+			*NVIC_ISER1 |= (1 << (IRQNumber % 32));
+		} else if (IRQNumber >= 64 && IRQNumber < 96) {
+			*NVIC_ISER2 |= (1 << (IRQNumber % 64));
+		}
+	} else {
+		if (IRQNumber <= 31) {
+			*NVIC_ICER0 |= (1 << IRQNumber);
+		} else if (IRQNumber > 31 && IRQNumber < 64) {
+			*NVIC_ICER1 |= (1 << (IRQNumber % 32));
+		} else if (IRQNumber >= 64 && IRQNumber < 96) {
+			*NVIC_ICER2 |= (1 << (IRQNumber % 64));
+		}
+	}
+}
 
+/*
+ * GPIO IRQ Interrupt Priority Configuration
+ * desc: configures the priority of an interrupt
+ * input1:
+ */
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority) {
+	uint8_t IPR_offset = IRQNumber % 4;
+	uint8_t IPR_number = IRQNumber / 4;
+
+	// stm32 nucleo f446re has 16 programmable priority levels (only 4 bits are used)
+	uint8_t shift_amount = ( 8 * IPR_offset) + ( 8 - NUM_PR_BITS_IMPLEMENTED);
+	*(NVIC_PR_BASE_ADDR + IPR_number) |= ( IRQPriority << shift_amount );
 }
 
 /*
@@ -239,5 +287,8 @@ void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t enable_flag)
  * output: none
  */
 void GPIO_IRQHandling(uint8_t pinNumber) {
-
+	// clear the exti pr register corresponding to the pin number
+	if (EXTI->PR & ( 1 << pinNumber )) {
+		EXTI->PR |= ( 1 << pinNumber);
+	}
 }
