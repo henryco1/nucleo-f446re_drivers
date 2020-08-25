@@ -76,6 +76,8 @@ void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t enable_flag) {
 void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 	uint32_t curr_reg = 0;
 
+	GPIO_PeriClockControl(pGPIOHandle->pGPIOx, ENABLE);
+
 	//configure gpio pin mode
 	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG) {
 		curr_reg = (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));

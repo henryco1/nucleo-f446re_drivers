@@ -84,6 +84,13 @@ typedef struct {
 #define SPI_SOFTWARE_SLAVE_DISABLE			0
 #define SPI_SOFTWARE_SLAVE_ENABLE			1
 
+/*
+ * SPI register status flag macros
+ */
+#define SPI_STATUS_TXE_FLAG					( 1 << SPI_SR_TXE )
+#define SPI_STATUS_RXNE_FLAG				( 1 << SPI_SR_RXNE )
+#define SPI_STATUS_BUSY_FLAG				( 1 << SPI_SR_BSY )
+
 /************************
  * Driver API
  ************************/
@@ -92,16 +99,21 @@ void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t enable_flag);
 
 // Peripheral Init
 void SPI_Init(SPI_Handle_t *pSPIHandle);
-void SPI_DeInit(SPI_Config_t *pSPIx);
+void SPI_DeInit(SPI_RegDef_t *pSPIx);
 
 // Transmit and Receive
-void SPI_SendData(SPI_Config_t *pSPIx, uint8_t *pTxBuffer, uint32_t len);
-void SPI_ReceiveData(SPI_Config_t *pSPIx, uint8_t *pTxBuffer, uint32_t len);
+void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t len);
+void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t len);
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t flag_name);
 
 // IRQ Config and ISR Handling
 void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t enable_flag);
 void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 void SPI_IRQHandling(SPI_Handle_t *pSPIHandle); // note that the interrupt for that GPIO will be triggered and it knows what pin was activated
 
-
+/*
+ * Other control APIs
+ */
+void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t enable_flag);
+void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t enable_flag);
 #endif /* INC_STM32F446XX_SPI_DRIVER_H_ */

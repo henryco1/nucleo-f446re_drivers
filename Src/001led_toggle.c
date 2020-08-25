@@ -58,8 +58,8 @@ void button_toggle_led(void) {
 	led_gpio.GPIO_PinConfig.GPIO_PinOPType = GPIO_OTYPE_PUSH_PULL;
 	led_gpio.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NONE;
 
-	GPIO_PeriClockControl(GPIOA, ENABLE);
-	GPIO_PeriClockControl(GPIOC, ENABLE);
+//	GPIO_PeriClockControl(GPIOA, ENABLE);
+//	GPIO_PeriClockControl(GPIOC, ENABLE);
 	GPIO_Init(&led_gpio);
 	GPIO_Init(&button_gpio);
 
