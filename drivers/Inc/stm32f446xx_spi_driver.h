@@ -115,5 +115,6 @@ void SPI_IRQHandling(SPI_Handle_t *pSPIHandle); // note that the interrupt for t
  * Other control APIs
  */
 void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t enable_flag);
-void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t enable_flag);
+void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t enable_flag); // once this function is called, SPI configurations cannot be changed
+void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t enable_flag); // controls single master or multi master configs for master SPI peripherals
 #endif /* INC_STM32F446XX_SPI_DRIVER_H_ */

@@ -1,4 +1,4 @@
-"Src/spi_tx_test.o"
+"Inc/spi_txonly_arduino_test.o"
 "Src/syscalls.o"
 "Src/sysmem.o"
 "Startup/startup_stm32f446retx.o"

@@ -58,15 +58,18 @@ void SPI2_Init(void) {
 }
 
 int main(void) {
+	char data[] = "Hello world";
+
+	// initialization
 	SPI_GPIOInit();
 	SPI2_Init();
-
-	char data[] = "Hello world";
 
 	SPI_SSIConfig(SPI2, ENABLE);
 	SPI_PeripheralControl(SPI2, ENABLE);
 
 	SPI_SendData(SPI2, (uint8_t*)data, strlen(data));
+
+	while(SPI_GetFlagStatus(SPI2, SPI_STATUS_BUSY_FLAG));
 
 	SPI_PeripheralControl(SPI2, DISABLE);
 

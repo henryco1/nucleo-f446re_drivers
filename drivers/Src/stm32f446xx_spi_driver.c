@@ -125,7 +125,7 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t len) {
 			(uint16_t*)pTxBuffer++;
 		} else {
 			// 8 bits
-			pSPIx->DR = pTxBuffer;
+			pSPIx->DR = *((uint8_t*)pTxBuffer);
 			len--;
 			pTxBuffer++;
 		}
@@ -176,6 +176,7 @@ void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t enable_flag) {
 /*
  * SPI SSI Control
  * desc: controls the SSI pin which controls the NSS pin for SPI peripherals
+ * 		when software slave management is enabled
  * input1: SPI register struct mapped to the SPI base address
  * input2: an ENABLE/DISABLE macro
  * output: none
@@ -185,6 +186,23 @@ void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t enable_flag) {
 		pSPIx->CR1 |= (1 << SPI_CR1_SSI);
 	} else {
 		pSPIx->CR1 &= ~(1 << SPI_CR1_SSI);
+	}
+}
+
+/*
+ * SPI SSI Control
+ * desc: controls the SSOE pin which has two configurations for the NSS pin
+ *		SPI peripherals in master mode. 0 for single master and 1 for multi-master
+ *		configuration
+ * input1: SPI register struct mapped to the SPI base address
+ * input2: an ENABLE/DISABLE macro
+ * output: none
+ */
+void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t enable_flag) {
+	if (enable_flag == ENABLE) {
+		pSPIx->CR1 |= (1 << SPI_CR2_SSOE);
+	} else {
+		pSPIx->CR1 &= ~(1 << SPI_CR2_SSOE);
 	}
 }
 // IRQ Config and ISR Handling
