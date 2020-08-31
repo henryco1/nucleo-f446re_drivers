@@ -125,7 +125,7 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t len) {
 			(uint16_t*)pTxBuffer++;
 		} else {
 			// 8 bits
-			pSPIx->DR = *((uint8_t*)pTxBuffer);
+			pSPIx->DR = *pTxBuffer;
 			len--;
 			pTxBuffer++;
 		}
@@ -138,12 +138,31 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t len) {
  * SPI Receive Data
  * desc: sends data to the SPI transmit buffer
  * input1: SPI register struct mapped to the SPI base address
- * input2: a buffer for holding information that goes into the txbuffer
+ * input2: a buffer for holding information that goes into the rxbuffer
  * input3: the size of the transmission in bytes
  * output: none
  */
-void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t len) {
+void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t len) {
+	while (len > 0) {
+		// 1. wait until RXNE is set
+		while (SPI_GetFlagStatus(pSPIx, SPI_STATUS_RXNE_FLAG) == FLAG_RESET);
 
+		// 2. check the DFF register
+		// 3. then load the data into the data register
+		if (pSPIx->CR1 & (1 << SPI_CR1_DFF)) {
+			// 16 bits
+			*((uint16_t*)pRxBuffer) = pSPIx->DR;
+			len =- 2;
+			(uint16_t*)pRxBuffer++;
+		} else {
+			// 8 bits
+			*pRxBuffer = pSPIx->DR;
+			len--;
+			pRxBuffer++;
+		}
+
+
+	}
 }
 
 /*
@@ -190,19 +209,19 @@ void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t enable_flag) {
 }
 
 /*
- * SPI SSI Control
+ * SPI SSOE Control
  * desc: controls the SSOE pin which has two configurations for the NSS pin
  *		SPI peripherals in master mode. 0 for single master and 1 for multi-master
- *		configuration
+ *		configuration. Note that when SPE = 1, SSOE = 0 when SSOE is enabled
  * input1: SPI register struct mapped to the SPI base address
  * input2: an ENABLE/DISABLE macro
  * output: none
  */
 void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t enable_flag) {
 	if (enable_flag == ENABLE) {
-		pSPIx->CR1 |= (1 << SPI_CR2_SSOE);
+		pSPIx->CR2 |= (1 << SPI_CR2_SSOE);
 	} else {
-		pSPIx->CR1 &= ~(1 << SPI_CR2_SSOE);
+		pSPIx->CR2 &= ~(1 << SPI_CR2_SSOE);
 	}
 }
 // IRQ Config and ISR Handling

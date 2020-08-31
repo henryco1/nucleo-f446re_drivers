@@ -28,7 +28,7 @@ void SPI2_GPIO_Init(void) {
 	GPIOB_Handle.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
 	GPIOB_Handle.GPIO_PinConfig.GPIO_PinAltFuncMode = 5;
 	GPIOB_Handle.GPIO_PinConfig.GPIO_PinOPType = GPIO_OTYPE_PUSH_PULL;
-	GPIOB_Handle.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NONE;
+	GPIOB_Handle.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_PULL_UP;
 	GPIOB_Handle.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
 
 	// NSS
@@ -74,7 +74,7 @@ void GPIO_Button_Init(void) {
 }
 
 int main(void) {
-	char data[] = "Hello World";
+	char data[] = "Hello Worldd a s asd q t s cg sg  sjg biy  7 9 d9 uhf9  adj ia if ia aop eiuy oa68 89 a 9";
 	uint8_t data_size = strlen(data);
 
 	// initialization
@@ -85,8 +85,8 @@ int main(void) {
 
 	while (1) {
 		// wait till button press
-		while(!GPIO_ReadFromInputPin(GPIOC, GPIO_PIN_13)) {}
-		delay(500000/2);
+		while(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN_13)) {}
+		delay(500000);
 
 		SPI_PeripheralControl(SPI2, ENABLE);
 

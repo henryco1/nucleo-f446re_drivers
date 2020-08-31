@@ -15,7 +15,7 @@
  * ALT Function Mode = 5
  */
 
-void SPI_GPIOInit(void) {
+void SPI_GPIO_Init(void) {
 	GPIO_Handle_t SPI_GPIOB;
 	SPI_GPIOB.pGPIOx = GPIOB;
 
@@ -61,7 +61,7 @@ int main(void) {
 	char data[] = "Hello world";
 
 	// initialization
-	SPI_GPIOInit();
+	SPI_GPIO_Init();
 	SPI2_Init();
 
 	SPI_SSIConfig(SPI2, ENABLE);

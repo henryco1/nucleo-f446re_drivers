@@ -128,7 +128,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 	curr_reg = 0;
 
 	// configure alt func
-	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinAltFuncMode == GPIO_MODE_ALTFN) {
+	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_ALTFN) {
 		// configure the alt function registers
 		// since the alt register is handled as an array, we need to know the index and the pin within the index.
 		uint32_t alt_index, pin_offset;
