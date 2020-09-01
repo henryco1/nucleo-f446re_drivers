@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  0002006c  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00002287  00000000  00000000  0002009c  2**0
+ 12 .debug_info   00002609  00000000  00000000  0002009c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 0000065d  00000000  00000000  00022323  2**0
+ 13 .debug_abbrev 00000711  00000000  00000000  000226a5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 00000160  00000000  00000000  00022980  2**3
+ 14 .debug_aranges 000001c0  00000000  00000000  00022db8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 00000118  00000000  00000000  00022ae0  2**3
+ 15 .debug_ranges 00000178  00000000  00000000  00022f78  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  00002a31  00000000  00000000  00022bf8  2**0
+ 16 .debug_macro  00002acd  00000000  00000000  000230f0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   000018a7  00000000  00000000  00025629  2**0
+ 17 .debug_line   00001a15  00000000  00000000  00025bbd  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    0000a8ad  00000000  00000000  00026ed0  2**0
+ 18 .debug_str    0000ab84  00000000  00000000  000275d2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  0003177d  2**0
+ 19 .comment      0000007b  00000000  00000000  00032156  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00000f70  00000000  00000000  000317f8  2**2
+ 20 .debug_frame  00001140  00000000  00000000  000321d4  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -258,48 +258,48 @@ void SPI2_GPIO_Init(void) {
 
 void SPI2_Init(void) {
  8000350:	b580      	push	{r7, lr}
- 8000352:	b084      	sub	sp, #16
+ 8000352:	b088      	sub	sp, #32
  8000354:	af00      	add	r7, sp, #0
 	SPI_Handle_t SPI2_Handle;
 	memset(&SPI2_Handle, 0 , sizeof(SPI_Handle_t));
- 8000356:	1d3b      	adds	r3, r7, #4
- 8000358:	220c      	movs	r2, #12
+ 8000356:	463b      	mov	r3, r7
+ 8000358:	2220      	movs	r2, #32
  800035a:	2100      	movs	r1, #0
  800035c:	4618      	mov	r0, r3
  800035e:	f000 fe81 	bl	8001064 <memset>
 	SPI2_Handle.pSPIx = SPI2;
  8000362:	4b0c      	ldr	r3, [pc, #48]	; (8000394 <SPI2_Init+0x44>)
- 8000364:	607b      	str	r3, [r7, #4]
+ 8000364:	603b      	str	r3, [r7, #0]
 
 	SPI2_Handle.SPI_Config.SPI_BusConfig = SPI_BUS_CONFIG_DUPLEX;
  8000366:	2300      	movs	r3, #0
- 8000368:	727b      	strb	r3, [r7, #9]
+ 8000368:	717b      	strb	r3, [r7, #5]
 	SPI2_Handle.SPI_Config.SPI_DataFrameFormat = SPI_DATA_FRAME_8_BIT;
  800036a:	2300      	movs	r3, #0
- 800036c:	72fb      	strb	r3, [r7, #11]
+ 800036c:	71fb      	strb	r3, [r7, #7]
 	SPI2_Handle.SPI_Config.SPI_SoftwareSlaveManagement = SPI_SOFTWARE_SLAVE_DISABLE;
  800036e:	2300      	movs	r3, #0
- 8000370:	73bb      	strb	r3, [r7, #14]
+ 8000370:	72bb      	strb	r3, [r7, #10]
 	SPI2_Handle.SPI_Config.SPI_SerialClkSpeed = SPI_SCLK_FPCLK_16;
  8000372:	2303      	movs	r3, #3
- 8000374:	72bb      	strb	r3, [r7, #10]
+ 8000374:	71bb      	strb	r3, [r7, #6]
 	SPI2_Handle.SPI_Config.SPI_CPHA = SPI_CPHA_LOW;
  8000376:	2300      	movs	r3, #0
- 8000378:	737b      	strb	r3, [r7, #13]
+ 8000378:	727b      	strb	r3, [r7, #9]
 	SPI2_Handle.SPI_Config.SPI_CPOL = SPI_CPOL_LOW;
  800037a:	2300      	movs	r3, #0
- 800037c:	733b      	strb	r3, [r7, #12]
+ 800037c:	723b      	strb	r3, [r7, #8]
 	SPI2_Handle.SPI_Config.SPI_DeviceMode = SPI_DEVICE_MODE_MASTER;
  800037e:	2301      	movs	r3, #1
- 8000380:	723b      	strb	r3, [r7, #8]
+ 8000380:	713b      	strb	r3, [r7, #4]
 
 	SPI_Init(&SPI2_Handle);
- 8000382:	1d3b      	adds	r3, r7, #4
+ 8000382:	463b      	mov	r3, r7
  8000384:	4618      	mov	r0, r3
  8000386:	f000 fd39 	bl	8000dfc <SPI_Init>
 }
  800038a:	bf00      	nop
- 800038c:	3710      	adds	r7, #16
+ 800038c:	3720      	adds	r7, #32
  800038e:	46bd      	mov	sp, r7
  8000390:	bd80      	pop	{r7, pc}
  8000392:	bf00      	nop
@@ -2110,8 +2110,6 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t len) {
  8000f04:	2b00      	cmp	r3, #0
  8000f06:	d1d7      	bne.n	8000eb8 <SPI_SendData+0xe>
 		}
-
-
 	}
 }
  8000f08:	bf00      	nop
@@ -2188,8 +2186,6 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t len) {
  8000f6a:	2b00      	cmp	r3, #0
  8000f6c:	d1d7      	bne.n	8000f1e <SPI_ReceiveData+0xe>
 		}
-
-
 	}
 }
  8000f6e:	bf00      	nop
@@ -2201,7 +2197,7 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t len) {
  * desc: checks the status of a user specified register
  * input1: SPI register struct ideally mapped to the status register
  * input2: an uint32_t status to check for
- * output: none
+ * output: the flag register's status
  */
 uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t flag_name) {
  8000f76:	b480      	push	{r7}

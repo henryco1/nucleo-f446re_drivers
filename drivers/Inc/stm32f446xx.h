@@ -8,7 +8,9 @@
 #define INC_STM32F446XX_H_
 
 #include <stdint.h>
+#include<stddef.h>
 #define __vo volatile
+#define __weak __attribute__((weak))
 
 /**************************************
  * Processor Registers
@@ -308,7 +310,7 @@ typedef struct {
 #define GPIOH_PCLK_RESET		do { ( RCC->AHB1RSTR |= (1 << 7) ); ( RCC->AHB1RSTR &= ~(1 << 7) ); } while (0)
 
 /*
- * IRQ Numbers for the stm32f446xx MCU family
+ * IRQ EXTI Numbers for the stm32f446xx MCU family
  */
 #define IRQ_NO_EXTI0			6
 #define IRQ_NO_EXTI1			7
@@ -394,6 +396,24 @@ typedef struct {
 #define SPI_SR_OVR				6
 #define SPI_SR_BSY				7
 #define SPI_SR_FRF				8
+
+/*
+ * SPI interrupt address positions
+ */
+#define SPI1_IRQ_ADDR				((__vo uint32_t*) 0x000000CC)
+#define SPI2_IRQ_ADDR				((__vo uint32_t*) 0x000000D0)
+#define SPI3_IRQ_ADDR				((__vo uint32_t*) 0x0000010C)
+#define SPI4_IRQ_ADDR				((__vo uint32_t*) 0x00000190)
+
+/*
+ * SPI IRQ Numbers
+ */
+#define SPI1_IRQ_NUM				35
+#define SPI2_IRQ_NUM				36
+#define SPI3_IRQ_NUM				51
+#define SPI4_IRQ_NUM				84
+
+
 
 #include "stm32f446xx_gpio_driver.h"
 #include "stm32f446xx_spi_driver.h"

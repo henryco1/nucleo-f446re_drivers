@@ -240,8 +240,7 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber) {
  * GPIO Interrupt Request Config
  * desc: configures GPIOx IRQ
  * input1: 2 byte IRQ number
- * input2: 2 byte number representing the priority of the IRQ
- * input3: a macro to enable/disable GPIO
+ * input2: a macro to enable/disable NVIC register
  * output: none
  */
 void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t enable_flag) {
@@ -267,7 +266,8 @@ void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t enable_flag) {
 /*
  * GPIO IRQ Interrupt Priority Configuration
  * desc: configures the priority of an interrupt
- * input1:
+ * input1: a uint8_t of the interrupt number
+ * input2: a uint32_t for the IRQ priority number
  */
 void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority) {
 	uint8_t IPR_offset = IRQNumber % 4;

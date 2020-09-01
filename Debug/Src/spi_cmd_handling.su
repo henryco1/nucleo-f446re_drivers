@@ -1,6 +1,6 @@
 spi_cmd_handling.c:36:6:delay	24	static
 spi_cmd_handling.c:47:6:SPI2_GPIO_Init	24	static
-spi_cmd_handling.c:75:6:SPI2_Init	24	static
+spi_cmd_handling.c:75:6:SPI2_Init	40	static
 spi_cmd_handling.c:91:6:GPIO_Button_Init	24	static
 spi_cmd_handling.c:103:5:SPI_VerifyResponse	16	static
 spi_cmd_handling.c:110:5:main	48	static
