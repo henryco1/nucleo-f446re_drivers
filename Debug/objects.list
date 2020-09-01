@@ -1,5 +1,4 @@
-"Inc/spi_txonly_arduino_test.o"
-"Src/syscalls.o"
+"Src/spi_cmd_handling.o"
 "Src/sysmem.o"
 "Startup/startup_stm32f446retx.o"
 "drivers/Src/stm32f446xx_gpio_driver.o"

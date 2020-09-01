@@ -11,7 +11,6 @@ RM := rm -rf
 -include drivers/Src/subdir.mk
 -include Startup/subdir.mk
 -include Src/subdir.mk
--include Inc/subdir.mk
 -include subdir.mk
 -include objects.mk
 
@@ -42,7 +41,7 @@ all: stm32-f446re_drivers.elf secondary-outputs
 
 # Tool invocations
 stm32-f446re_drivers.elf: $(OBJS) $(USER_OBJS) E:\Coding\Coding\embedded_c\mcu1-course\mcu1\nucleo-f446re_drivers\STM32F446RETX_FLASH.ld
-	arm-none-eabi-gcc -o "stm32-f446re_drivers.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\Coding\Coding\embedded_c\mcu1-course\mcu1\nucleo-f446re_drivers\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32-f446re_drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "stm32-f446re_drivers.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\Coding\Coding\embedded_c\mcu1-course\mcu1\nucleo-f446re_drivers\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32-f446re_drivers.map" -Wl,--gc-sections -static -specs=rdimon.specs -lc -lrdimon --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
