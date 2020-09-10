@@ -23,7 +23,7 @@ typedef struct {
 } SPI_Config_t;
 
 /********************************
- * Handle structure for GPIO pins
+ * Handle structure for SPI pins
  ********************************/
 typedef struct {
 	SPI_RegDef_t *pSPIx;				// holds the register struct for a SPI peripheral

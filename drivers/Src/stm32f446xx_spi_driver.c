@@ -417,7 +417,7 @@ __weak void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle,uint8_t AppEv)
  * input1: SPI_Handle_t containing data to handle data transmit
  * output: none
  */
-void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle) {
+static void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle) {
 	/*
 	 * 1. wait until TXE is set
 	 * 2. check the DFF register
@@ -448,7 +448,7 @@ void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle) {
  * input1: SPI_Handle_t containing data to handle data transmit
  * output: none
  */
-void spi_rxe_interrupt_handle(SPI_Handle_t *pSPIHandle) {
+static void spi_rxe_interrupt_handle(SPI_Handle_t *pSPIHandle) {
 	/*
 	 * 1. wait until RXNE is set
 	 * 2. check the DFF register
@@ -479,7 +479,7 @@ void spi_rxe_interrupt_handle(SPI_Handle_t *pSPIHandle) {
  * input1: SPI_Handle_t containing data to handle data transmit
  * output: none
  */
-void spi_ovr_err_interrupt_handle(SPI_Handle_t *pSPIHandle) {
+static void spi_ovr_err_interrupt_handle(SPI_Handle_t *pSPIHandle) {
 	SPI_ClearOVRFlag(pSPIHandle->pSPIx);
 	SPI_ApplicationEventCallback(pSPIHandle, SPI_EVENT_OVR_ERR);
 }

@@ -16,6 +16,6 @@ stm32f446xx_spi_driver.c:368:6:SPI_ClearOVRFlag	24	static
 stm32f446xx_spi_driver.c:384:6:SPI_CloseTransmisson	16	static
 stm32f446xx_spi_driver.c:397:6:SPI_CloseReception	16	static
 stm32f446xx_spi_driver.c:404:13:SPI_ApplicationEventCallback	16	static
-stm32f446xx_spi_driver.c:420:6:spi_txe_interrupt_handle	16	static
-stm32f446xx_spi_driver.c:451:6:spi_rxe_interrupt_handle	16	static
-stm32f446xx_spi_driver.c:482:6:spi_ovr_err_interrupt_handle	16	static
+stm32f446xx_spi_driver.c:420:13:spi_txe_interrupt_handle	16	static
+stm32f446xx_spi_driver.c:451:13:spi_rxe_interrupt_handle	16	static
+stm32f446xx_spi_driver.c:482:13:spi_ovr_err_interrupt_handle	16	static
