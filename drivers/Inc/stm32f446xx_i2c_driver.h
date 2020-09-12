@@ -50,6 +50,22 @@ typedef struct {
 #define I2C_FM_DUTY_CYCLE_2				0
 #define I2C_FM_DUTY_CYCLE_16_9			1
 
+/*
+ * I2C register status flag macros
+ */
+#define I2C_STATUS_TXE_FLAG					( 1 << I2C_SR1_TXE )
+#define I2C_STATUS_RXNE_FLAG				( 1 << I2C_SR1_RXNE )
+#define I2C_STATUS_SB_FLAG					( 1 << I2C_SR1_SB )
+#define I2C_STATUS_OVR_FLAG					( 1 << I2C_SR1_OVR )
+#define I2C_STATUS_AF_FLAG					( 1 << I2C_SR1_AF )
+#define I2C_STATUS_ARLO_FLAG				( 1 << I2C_SR1_ARLO)
+#define I2C_STATUS_BERR_FLAG				( 1 << I2C_SR1_BERR)
+#define I2C_STATUS_STOPF_FLAG 				( 1 << I2C_SR1_STOPF)
+#define I2C_STATUS_ADD10_FLAG				( 1 << I2C_SR1_ADD10)
+#define I2C_STATUS_BTF_FLAG					( 1 << I2C_SR1_BTF)
+#define I2C_STATUS_ADDR_FLAG 				( 1 << I2C_SR1_ADDR)
+#define I2C_STATUS_TIMEOUT_FLAG 			( 1 << I2C_SR1_TIMEOUT)
+
 /************************
  * Driver API
  ************************/
@@ -61,7 +77,7 @@ void I2C_Init(I2C_Handle_t *pI2CHandle);
 void I2C_DeInit(I2C_RegDef_t *pI2Cx);
 
 // Transmit and Receive
-
+void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint32_t *pTxBuffer, uint32_t len, uint8_t slave_addr);
 
 // IRQ Config and ISR Handling
 void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t enable_flag);
