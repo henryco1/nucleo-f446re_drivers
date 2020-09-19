@@ -2,4 +2,4 @@ i2c_master_rx_test.c:22:6:delay	24	static
 i2c_master_rx_test.c:31:6:I2C1_GPIO_Init	24	static
 i2c_master_rx_test.c:50:6:I2C1_Init	8	static
 i2c_master_rx_test.c:60:6:GPIO_Button_Init	24	static
-i2c_master_rx_test.c:73:5:main	48	static
+i2c_master_rx_test.c:73:5:main	56	static

@@ -25,6 +25,14 @@ typedef struct {
 typedef struct {
 	I2C_RegDef_t *pI2Cx;				// holds the register struct for a I2C peripheral
 	I2C_Config_t I2C_Config;			// holds user configurations for an I2C peripheral
+	uint8_t *pTxBuffer;					// holds the txbuffer addr
+	uint8_t *pRxBuffer;					// holds the rxbuffer addr
+	uint32_t TxLen;						// holds the tx msg length
+	uint32_t RxLen;						// holds the rx msg length
+	uint8_t TxRxState;					// holds info on the communication state
+	uint8_t DeviceAddr;					// holds slave addr
+	uint8_t RxSize;						// stores rx size?
+	uint8_t Sr;							// flag for the repeated start option
 } I2C_Handle_t;
 
 /****************************
@@ -78,8 +86,10 @@ void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t enable_flag);
 void I2C_DeInit(I2C_RegDef_t *pI2Cx);
 
 // Transmit and Receive
-void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t len, uint8_t slave_addr);
-void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t len, uint8_t slave_addr);
+void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t len, uint8_t slave_addr, uint8_t repeated_start_flag);
+void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t len, uint8_t slave_addr, uint8_t repeated_start_flag);
+uint8_t I2C_MasterSendDataIT(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t len, uint8_t slave_addr, uint8_t repeated_start_flag);
+uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t len, uint8_t slave_addr, uint8_t repeated_start_flag);
 
 // IRQ Config and ISR Handling
 void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t enable_flag);

@@ -339,6 +339,9 @@ typedef struct {
 #define IRQ_NO_EXTI4			10
 #define IRQ_NO_EXTI9_5			23
 #define IRQ_NO_EXTI15_10		40
+#define IRQ_NO_I2C1_EV			31
+#define IRQ_NO_I2C1_ER			32
+
 
 /*
  * IRQ Priority Levels
@@ -502,12 +505,26 @@ typedef struct {
 #define I2C_SR2_SMBHOST			6
 #define I2C_SR2_DUALF			7
 #define I2C_SR2_PEC				8
+
 /*
  *  clock control register bit positions
  */
 #define I2C_CCR_CCR				0
 #define I2C_CCR_DUTY			14
 #define I2C_CCR_FS				15
+
+/*
+ *  I2C application state
+ */
+#define I2C_STATE_READY					0
+#define I2C_STATE_BUSY_IN_TX			1
+#define I2C_STATE_BUSY_IN_RX			2
+
+/*
+ *  repeated start flag
+ */
+#define I2C_REPEATED_START_DISABLE		0
+#define I2C_REPEATED_START_ENABLE		1
 
 #include "stm32f446xx_gpio_driver.h"
 #include "stm32f446xx_spi_driver.h"
