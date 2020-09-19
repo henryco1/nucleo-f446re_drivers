@@ -58,13 +58,13 @@ typedef struct {
 #define I2C_STATUS_SB_FLAG					( 1 << I2C_SR1_SB )
 #define I2C_STATUS_OVR_FLAG					( 1 << I2C_SR1_OVR )
 #define I2C_STATUS_AF_FLAG					( 1 << I2C_SR1_AF )
-#define I2C_STATUS_ARLO_FLAG				( 1 << I2C_SR1_ARLO)
-#define I2C_STATUS_BERR_FLAG				( 1 << I2C_SR1_BERR)
-#define I2C_STATUS_STOPF_FLAG 				( 1 << I2C_SR1_STOPF)
-#define I2C_STATUS_ADD10_FLAG				( 1 << I2C_SR1_ADD10)
-#define I2C_STATUS_BTF_FLAG					( 1 << I2C_SR1_BTF)
-#define I2C_STATUS_ADDR_FLAG 				( 1 << I2C_SR1_ADDR)
-#define I2C_STATUS_TIMEOUT_FLAG 			( 1 << I2C_SR1_TIMEOUT)
+#define I2C_STATUS_ARLO_FLAG				( 1 << I2C_SR1_ARLO )
+#define I2C_STATUS_BERR_FLAG				( 1 << I2C_SR1_BERR )
+#define I2C_STATUS_STOPF_FLAG 				( 1 << I2C_SR1_STOPF )
+#define I2C_STATUS_ADD10_FLAG				( 1 << I2C_SR1_ADD10 )
+#define I2C_STATUS_BTF_FLAG					( 1 << I2C_SR1_BTF )
+#define I2C_STATUS_ADDR_FLAG 				( 1 << I2C_SR1_ADDR )
+#define I2C_STATUS_TIMEOUT_FLAG 			( 1 << I2C_SR1_TIMEOUT )
 
 /************************
  * Driver API
@@ -74,10 +74,12 @@ void I2C_PeriClockControl(I2C_RegDef_t *pI2Cx, uint8_t enable_flag);
 
 // Peripheral Init
 void I2C_Init(I2C_Handle_t *pI2CHandle);
+void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t enable_flag);
 void I2C_DeInit(I2C_RegDef_t *pI2Cx);
 
 // Transmit and Receive
-void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint32_t *pTxBuffer, uint32_t len, uint8_t slave_addr);
+void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t len, uint8_t slave_addr);
+void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t len, uint8_t slave_addr);
 
 // IRQ Config and ISR Handling
 void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t enable_flag);
@@ -89,6 +91,7 @@ void I2C_IRQHandling(I2C_Handle_t *pI2CHandle); // note that the interrupt for t
  */
 void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t enable_flag);
 uint8_t I2C_GetFlagStatus(I2C_RegDef_t *pI2Cx, uint32_t flag_name);
+void I2C_ManageAcking(I2C_RegDef_t *pI2Cx, uint8_t enable_flag);
 
 /*
  * Application callback

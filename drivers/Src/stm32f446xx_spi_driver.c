@@ -381,7 +381,7 @@ void SPI_ClearOVRFlag(SPI_RegDef_t *pSPIx) {
  * input1: SPI_Handle_t containing data to handle data transmit
  * output: none
  */
-void SPI_CloseTransmisson(SPI_Handle_t *pSPIHandle) {
+void SPI_CloseTransmission(SPI_Handle_t *pSPIHandle) {
 	pSPIHandle->pSPIx->CR2 &= ~(1 << SPI_CR2_TXEIE);
 	pSPIHandle->pTxBuffer = NULL;
 	pSPIHandle->TxLen = 0;
