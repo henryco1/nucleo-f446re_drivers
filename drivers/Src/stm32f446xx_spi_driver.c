@@ -9,6 +9,9 @@ static void spi_txe_interrupt_handle();
 static void spi_rxe_interrupt_handle();
 static void spi_ovr_err_interrupt_handle();
 
+/*************************
+ * Clock Control functions
+ *************************/
 /*
  * SPI Clock Control
  * desc: enables or disables the clock for a given SPI peripheral
@@ -46,6 +49,9 @@ void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t enable_flag) {
 	}
 }
 
+/****************************
+ * Initialization functions
+ ****************************/
 // Peripheral Init
 void SPI_Init(SPI_Handle_t *pSPIHandle) {
 
@@ -172,7 +178,7 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t len) {
 /*
  * SPI Flag Status Helper
  * desc: checks the status of a user specified register
- * input1: SPI register struct ideally mapped to the status register
+ * input1: SPI register pointer mapped to an SPI peripheral
  * input2: an uint32_t status to check for
  * output: the flag register's status
  */

@@ -772,15 +772,15 @@ LOAD c:/st/stm32cubeide_1.3.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
  .text.RCC_GetPCLK1Value
                 0x0000000008000ad8      0x100 drivers/Src/stm32f446xx_i2c_driver.o
                 0x0000000008000ad8                RCC_GetPCLK1Value
- .text.I2C_PeripheralControl
-                0x0000000008000bd8       0x38 drivers/Src/stm32f446xx_i2c_driver.o
-                0x0000000008000bd8                I2C_PeripheralControl
  .text.I2C_PeriClockControl
-                0x0000000008000c10       0xac drivers/Src/stm32f446xx_i2c_driver.o
-                0x0000000008000c10                I2C_PeriClockControl
+                0x0000000008000bd8       0xac drivers/Src/stm32f446xx_i2c_driver.o
+                0x0000000008000bd8                I2C_PeriClockControl
  .text.I2C_Init
-                0x0000000008000cbc      0x108 drivers/Src/stm32f446xx_i2c_driver.o
-                0x0000000008000cbc                I2C_Init
+                0x0000000008000c84      0x108 drivers/Src/stm32f446xx_i2c_driver.o
+                0x0000000008000c84                I2C_Init
+ .text.I2C_PeripheralControl
+                0x0000000008000d8c       0x38 drivers/Src/stm32f446xx_i2c_driver.o
+                0x0000000008000d8c                I2C_PeripheralControl
  .text.I2C_MasterSendData
                 0x0000000008000dc4       0xc4 drivers/Src/stm32f446xx_i2c_driver.o
                 0x0000000008000dc4                I2C_MasterSendData
@@ -1202,19 +1202,19 @@ LOAD c:/st/stm32cubeide_1.3.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
                 0x0000000000000712       0x22 c:/st/stm32cubeide_1.3.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.7-2018-q2-update.win32_1.0.0.201904181610/tools/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7e-m/fpv4-sp/hard/crtn.o
 OUTPUT(stm32-f446re_drivers.elf elf32-littlearm)
 
-.debug_info     0x0000000000000000     0x2811
+.debug_info     0x0000000000000000     0x2805
  .debug_info    0x0000000000000000      0xc2b Src/i2c_master_rx_test.o
  .debug_info    0x0000000000000c2b      0x91c Src/sysmem.o
  .debug_info    0x0000000000001547       0x22 Startup/startup_stm32f446retx.o
  .debug_info    0x0000000000001569      0x726 drivers/Src/stm32f446xx_gpio_driver.o
- .debug_info    0x0000000000001c8f      0xb82 drivers/Src/stm32f446xx_i2c_driver.o
+ .debug_info    0x0000000000001c8f      0xb76 drivers/Src/stm32f446xx_i2c_driver.o
 
-.debug_abbrev   0x0000000000000000      0x765
+.debug_abbrev   0x0000000000000000      0x752
  .debug_abbrev  0x0000000000000000      0x1ff Src/i2c_master_rx_test.o
  .debug_abbrev  0x00000000000001ff      0x1bb Src/sysmem.o
  .debug_abbrev  0x00000000000003ba       0x12 Startup/startup_stm32f446retx.o
  .debug_abbrev  0x00000000000003cc      0x168 drivers/Src/stm32f446xx_gpio_driver.o
- .debug_abbrev  0x0000000000000534      0x231 drivers/Src/stm32f446xx_i2c_driver.o
+ .debug_abbrev  0x0000000000000534      0x21e drivers/Src/stm32f446xx_i2c_driver.o
 
 .debug_aranges  0x0000000000000000      0x1d8
  .debug_aranges
@@ -1287,12 +1287,12 @@ OUTPUT(stm32-f446re_drivers.elf elf32-littlearm)
  .debug_macro   0x0000000000002c58       0xad drivers/Src/stm32f446xx_i2c_driver.o
  .debug_macro   0x0000000000002d05       0xb2 drivers/Src/stm32f446xx_i2c_driver.o
 
-.debug_line     0x0000000000000000     0x1b4a
+.debug_line     0x0000000000000000     0x1b49
  .debug_line    0x0000000000000000      0x6d9 Src/i2c_master_rx_test.o
  .debug_line    0x00000000000006d9      0x559 Src/sysmem.o
  .debug_line    0x0000000000000c32       0x84 Startup/startup_stm32f446retx.o
  .debug_line    0x0000000000000cb6      0x662 drivers/Src/stm32f446xx_gpio_driver.o
- .debug_line    0x0000000000001318      0x832 drivers/Src/stm32f446xx_i2c_driver.o
+ .debug_line    0x0000000000001318      0x831 drivers/Src/stm32f446xx_i2c_driver.o
 
 .debug_str      0x0000000000000000     0xb364
  .debug_str     0x0000000000000000     0xa839 Src/i2c_master_rx_test.o

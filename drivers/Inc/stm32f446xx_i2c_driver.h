@@ -14,7 +14,7 @@
  ***************************************/
 typedef struct {
 	uint32_t I2C_SCLSpeed;				// see @I2C_SCL_SPEED
-	uint8_t I2C_DeviceAddress;			// see @I2C_DEVICE_ADDRRESS
+	uint8_t I2C_DeviceAddress;			// user specified
 	uint8_t I2C_ACKControl;				// see @I2C_ACK_CONTROL
 	uint8_t I2C_FMDutyCycle;			// see @I2C_FM_DUTY_CYCLE
 } I2C_Config_t;
@@ -112,10 +112,13 @@ void I2C_IRQHandling(I2C_Handle_t *pI2CHandle); // note that the interrupt for t
 void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle);
 void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle);
 
-// Other control APIs
-void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t enable_flag);
+// Data Transmission Helpers
 uint8_t I2C_GetFlagStatus(I2C_RegDef_t *pI2Cx, uint32_t flag_name);
 void I2C_ManageAcking(I2C_RegDef_t *pI2Cx, uint8_t enable_flag);
+
+// Interrupt Data Transmission Helpers
+void I2C_CloseSendData(I2C_Handle_t *pI2CHandle);
+void I2C_CloseReceiveData(I2C_Handle_t *pI2CHandle);
 
 /*
  * Application callback
