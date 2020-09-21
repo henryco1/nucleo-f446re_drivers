@@ -74,6 +74,20 @@ typedef struct {
 #define I2C_STATUS_ADDR_FLAG 				( 1 << I2C_SR1_ADDR )
 #define I2C_STATUS_TIMEOUT_FLAG 			( 1 << I2C_SR1_TIMEOUT )
 
+/*
+ * I2C application events macros
+ */
+#define I2C_EV_TX_CMPLT  	 	0
+#define I2C_EV_RX_CMPLT  	 	1
+#define I2C_EV_STOP       		2
+#define I2C_ERROR_BERR 	 		3
+#define I2C_ERROR_ARLO  		4
+#define I2C_ERROR_AF    		5
+#define I2C_ERROR_OVR   		6
+#define I2C_ERROR_TIMEOUT 		7
+#define I2C_EV_DATA_REQ         8
+#define I2C_EV_DATA_RCV         9
+
 /************************
  * Driver API
  ************************/
@@ -95,10 +109,10 @@ uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, ui
 void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t enable_flag);
 void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 void I2C_IRQHandling(I2C_Handle_t *pI2CHandle); // note that the interrupt for that GPIO will be triggered and it knows what pin was activated
+void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle);
+void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle);
 
-/*
- * Other control APIs
- */
+// Other control APIs
 void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t enable_flag);
 uint8_t I2C_GetFlagStatus(I2C_RegDef_t *pI2Cx, uint32_t flag_name);
 void I2C_ManageAcking(I2C_RegDef_t *pI2Cx, uint8_t enable_flag);
