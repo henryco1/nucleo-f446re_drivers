@@ -215,9 +215,9 @@ void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t enable_flag) {
 	}
 
 }
-/************************************
- * Data Transmission Helper Functions
- ************************************/
+/*****************************
+ * Data Transmission Functions
+ *****************************/
 /*
  * I2C Master Send Data
  * desc: a function for a master device to send data through I2C to a slave device
