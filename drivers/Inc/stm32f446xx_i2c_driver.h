@@ -115,13 +115,13 @@ void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle);
 // Data Transmission Helpers
 uint8_t I2C_GetFlagStatus(I2C_RegDef_t *pI2Cx, uint32_t flag_name);
 void I2C_ManageAcking(I2C_RegDef_t *pI2Cx, uint8_t enable_flag);
+void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx);
 
 // Interrupt Data Transmission Helpers
 void I2C_CloseSendData(I2C_Handle_t *pI2CHandle);
 void I2C_CloseReceiveData(I2C_Handle_t *pI2CHandle);
 
-/*
- * Application callback
- */
+// Application Callback
+void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t AppEv);
 
 #endif /* INC_STM32F446XX_I2C_DRIVER_H_ */

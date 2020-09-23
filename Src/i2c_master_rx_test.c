@@ -103,7 +103,7 @@ int main(void) {
 		delay(500000);
 
 		// receive the entirety of the data from the arduino
-		I2C_MasterReceiveData(&I2C1Handle, RxBuffer, data_length, I2C_SLAVE_ADDR, I2C_REPEATED_START_ENABLE);
+		I2C_MasterReceiveData(&I2C1Handle, RxBuffer, data_length, I2C_SLAVE_ADDR, I2C_REPEATED_START_DISABLE);
 		RxBuffer[data_length+1] = '\0';
 		printf("The message is %s\n", RxBuffer);
 		delay(500000);

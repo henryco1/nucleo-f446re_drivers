@@ -8,7 +8,8 @@
 #define INC_STM32F446XX_H_
 
 #include <stdint.h>
-#include<stddef.h>
+#include <stddef.h>
+#include <stdio.h>
 #define __vo volatile
 #define __weak __attribute__((weak))
 
