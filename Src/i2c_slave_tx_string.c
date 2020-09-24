@@ -8,7 +8,7 @@
 #include <string.h>
 #include <stdio.h>
 
-extern void initialise_monitor_handles(void);
+//extern void initialise_monitor_handles(void);
 
 // I2C Defines
 #define I2C_SLAVE_ADDR 		0x69
@@ -76,8 +76,8 @@ int main(void) {
 	 * 	Here we initialize interrupts. Note that priority config is not needed as we are only working with one interrupt
 	 * 	We also need the interrupt name from the startup code. We override the IRQ handlers with our IRQ handler function
 	 */
-	initialise_monitor_handles();
-	printf("Semihosting successful\n");
+//	initialise_monitor_handles();
+//	printf("Semihosting successful\n");
 	GPIO_Button_Init();
 	I2C1_GPIO_Init();
 	I2C1_Init();
