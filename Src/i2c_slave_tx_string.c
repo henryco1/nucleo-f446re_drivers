@@ -15,7 +15,7 @@ extern void initialise_monitor_handles(void);
 
 // Globals
 I2C_Handle_t I2C1Handle;
-uint8_t Tx_buf[32] = "Hello World.....";
+uint8_t TxBuffer[32] = "Hello World.....";
 
 /*
  * PUPD LED control
@@ -105,66 +105,32 @@ void I2C1_ER_IRQHandler(void) {
 
 // handle the events caused the by driver as described by the application events macros
 void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t AppEv) {
-//	static uint8_t commandCode;
-//	static uint8_t count = 0;
-//
-//	if (AppEv == I2C_EV_DATA_REQ) {
-//		// master requests data from the slave
-//		if (commandCode == 0x51) {
-//			I2C_SlaveSendData(pI2CHandle->pI2Cx, strlen((char*)TxBuffer));
-//		} else if (commandCode == 0x52) {
-//			I2C_SlaveSendData(pI2CHandle->pI2Cx, TxBuffer[count++]);
-//		}
-//
-//	} else if (AppEv == I2C_EV_DATA_RCV) {
-//		// master sends data to the slave
-//		commandCode = I2C_SlaveReceiveData(pI2CHandle->pI2Cx);
-//	} else if (AppEv == I2C_ERROR_AF) {
-//		// nack sent by master, which is a signal to end data transfer. This event only happens during slave txing
-//		// invalidate the global vars command code and reset count.
-//		commandCode = 0xff;
-//		count = 0;
-//	} else if (AppEv == I2C_EV_STOP) {
-//		// only happens during slave reception. Master has ended I2C communication with the slave
-//		printf("Master has ended the I2C communication with the slave.\n");
-//
-//	}
-	static uint8_t commandCode = 0;
-	static  uint8_t Cnt = 0;
+	static uint8_t commandCode;
+	static uint8_t count = 0;
 
-	if(AppEv == I2C_EV_DATA_REQ)
-	{
-		//Master wants some data. slave has to send it
-		if(commandCode == 0x51)
-		{
-			//send the length information to the master
-			I2C_SlaveSendData(pI2CHandle->pI2Cx,strlen((char*)Tx_buf));
-			printf("sending length info to master\n");
-		}else if (commandCode == 0x52)
-		{
-			//Send the contents of Tx_buf
-			I2C_SlaveSendData(pI2CHandle->pI2Cx,Tx_buf[Cnt++]);
-			printf("sending the contents of tx_buf\n");
-
+	if (AppEv == I2C_EV_DATA_REQ) {
+		// master requests data from the slave
+		if (commandCode == 0x51) {
+			I2C_SlaveSendData(pI2CHandle->pI2Cx, strlen((char*)TxBuffer));
+//			printf("sending length info to master\n");
+		} else if (commandCode == 0x52) {
+			I2C_SlaveSendData(pI2CHandle->pI2Cx, TxBuffer[count++]);
+//			printf("sending the contents of tx_buf\n");
 		}
-	}else if (AppEv == I2C_EV_DATA_RCV)
-	{
-		//Data is waiting for the slave to read . slave has to read it
+
+	} else if (AppEv == I2C_EV_DATA_RCV) {
+		// master sends data to the slave
 		commandCode = I2C_SlaveReceiveData(pI2CHandle->pI2Cx);
-		printf("The command code is: %x\n", commandCode);
-	}else if (AppEv == I2C_ERROR_AF)
-	{
-		//This happens only during slave txing .
-		//Master has sent the NACK. so slave should understand that master doesnt need
-		//more data.
+//		printf("The command code is: %x\n", commandCode);
+	} else if (AppEv == I2C_ERROR_AF) {
+		// nack sent by master, which is a signal to end data transfer. This event only happens during slave txing
+		// invalidate the global vars command code and reset count.
 		commandCode = 0xff;
-		Cnt = 0;
+		count = 0;
 		printf("nack sent\n");
-	}
-	else if (AppEv == I2C_EV_STOP)
-	{
-		//This happens only during slave reception .
-		//Master has ended the I2C communication with the slave.
-		printf("Master has ended the I2C communication with the slave.\n");
+	} else if (AppEv == I2C_EV_STOP) {
+		// only happens during slave reception. Master has ended I2C communication with the slave
+//		printf("Master has ended the I2C communication with the slave.\n");
+
 	}
 }
