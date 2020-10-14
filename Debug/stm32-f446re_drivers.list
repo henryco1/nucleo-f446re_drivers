@@ -35,15 +35,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  15 .debug_ranges 000001b0  00000000  00000000  00023980  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  00002b23  00000000  00000000  00023b30  2**0
+ 16 .debug_macro  00002dcf  00000000  00000000  00023b30  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00001a28  00000000  00000000  00026653  2**0
+ 17 .debug_line   00001a82  00000000  00000000  000268ff  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    0000af1c  00000000  00000000  0002807b  2**0
+ 18 .debug_str    0000b797  00000000  00000000  00028381  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  00032f97  2**0
+ 19 .comment      0000007b  00000000  00000000  00033b18  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00000770  00000000  00000000  00033014  2**2
+ 20 .debug_frame  00000770  00000000  00000000  00033b94  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -2106,7 +2106,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle) {
 		else {
 			// slave
 			// validate that the slave is transmitter mode as determined by the address command byte
-			if (pI2CHandle->pI2Cx->SR2 & (1 <<I2C_SR2_TRA))
+			if (pI2CHandle->pI2Cx->SR2 & (1 << I2C_SR2_TRA))
  8000f04:	687b      	ldr	r3, [r7, #4]
  8000f06:	681b      	ldr	r3, [r3, #0]
  8000f08:	699b      	ldr	r3, [r3, #24]
@@ -2157,13 +2157,13 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle) {
  8000f4e:	6878      	ldr	r0, [r7, #4]
  8000f50:	f000 f975 	bl	800123e <I2C_MasterHandleRNXEInterrupt>
 			// ensure the slave is in receiver mode
-			if (!(pI2CHandle->pI2Cx->SR2 & (1 <<I2C_SR2_TRA)))
+			if (!(pI2CHandle->pI2Cx->SR2 & (1 << I2C_SR2_TRA)))
 				I2C_ApplicationEventCallback(pI2CHandle, I2C_EV_DATA_RCV);
 		}
 	}
 }
  8000f54:	e00a      	b.n	8000f6c <I2C_EV_IRQHandling+0x1c4>
-			if (!(pI2CHandle->pI2Cx->SR2 & (1 <<I2C_SR2_TRA)))
+			if (!(pI2CHandle->pI2Cx->SR2 & (1 << I2C_SR2_TRA)))
  8000f56:	687b      	ldr	r3, [r7, #4]
  8000f58:	681b      	ldr	r3, [r3, #0]
  8000f5a:	699b      	ldr	r3, [r3, #24]

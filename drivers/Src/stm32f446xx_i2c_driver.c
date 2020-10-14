@@ -214,6 +214,7 @@ void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t enable_flag) {
 	}
 
 }
+
 /*****************************
  * Data Transmission Functions
  *****************************/
@@ -329,6 +330,7 @@ void I2C_SlaveSendData(I2C_RegDef_t *pI2C, uint8_t data) {
 uint8_t I2C_SlaveReceiveData(I2C_RegDef_t *pI2C) {
 	return (uint8_t) pI2C->DR;
 }
+
 /*********************
  * Interrupt Functions
  *********************/
@@ -515,7 +517,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle) {
 		else {
 			// slave
 			// validate that the slave is transmitter mode as determined by the address command byte
-			if (pI2CHandle->pI2Cx->SR2 & (1 <<I2C_SR2_TRA))
+			if (pI2CHandle->pI2Cx->SR2 & (1 << I2C_SR2_TRA))
 				I2C_ApplicationEventCallback(pI2CHandle, I2C_EV_DATA_REQ);
 		}
 	}
@@ -535,7 +537,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle) {
 		else {
 			// slave
 			// ensure the slave is in receiver mode
-			if (!(pI2CHandle->pI2Cx->SR2 & (1 <<I2C_SR2_TRA)))
+			if (!(pI2CHandle->pI2Cx->SR2 & (1 << I2C_SR2_TRA)))
 				I2C_ApplicationEventCallback(pI2CHandle, I2C_EV_DATA_RCV);
 		}
 	}
