@@ -167,7 +167,39 @@ void USART_DeInit(USART_RegDef_t *pUSARTx) {
  * output: none
  */
 void USART_TransmitData(USART_Handle_t pUSARTHandle, uint8_t *pTxBuffer, uint32_t len) {
+	// enable usart (enable UE)
+	pUSARTHandle->pUSARTx->CR1 &= (1 << USART_CR1_UE);
+	// enable transmitter (TE)
+	pUSARTHandle->pUSARTx->CR1 &= (1 << USART_CR1_TE);
 
+	// write data
+	while (len--) {
+		// wait for the data transmission to finish
+		while (!USART_GetFlagStatus(pUSARTHandle->pUSARTx, USART_FLAG_TXE)) {}
+
+		// handle 9-bit and 8-bit frame
+		if (pUSARTHandle->USART_Config.USART_WordLength == USART_WORD_LENGTH_9_BITS) {
+			uint16_t *largeData = (uint16_t*) pxTxBuffer;
+			pUSARTHandle->pUSARTx->DR = (*largeData & (uint16_t)0x01FF);
+
+			// also need to handle parity bit config
+			if (pUSARTHandle->USART_Config.USART_ParityCtrl == USART_PARITY_CTRL_DISABLE) {
+				// no parity used, therefore all 9 bits contain message data
+				*pTxBuffer += 2;
+			}
+			else {
+				// otherwise, the parity bit is enabled and the HARDWARE will add the 9th bit. So only send 8 bits
+				*pTxBuffer++
+			}
+		}
+		else {
+			// if its just 8 bits, load a bit and increment the buffer ptr
+			pUSARTHandle->pUSARTx->DR = (*pTxBuffer & (uint8_t)0xFF);
+			*pTxBuffer++;
+		}
+	}
+
+	while (!USART_GetFlagStatus(pUSARTHandle->pUSARTx, USART_FLAG_TC)) {}
 }
 
 /*
@@ -181,7 +213,7 @@ void USART_TransmitData(USART_Handle_t pUSARTHandle, uint8_t *pTxBuffer, uint32_
  * output: none
  */
 void USART_ReceiveData(USART_Handle_t pUSARTHandle, uint8_t *pRxBuffer, uint32_t len) {
-
+	// enable receiver (RE)
 }
 
 uint8_t USART_TransmitDataIT(USART_Handle_t pUSARTHandle, uint8_t *pTxBuffer, uint32_t len) {
