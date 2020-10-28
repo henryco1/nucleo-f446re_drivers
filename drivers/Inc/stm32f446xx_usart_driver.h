@@ -14,7 +14,7 @@
  ***************************************/
 typedef struct {
 	uint8_t USART_DeviceMode;					// see values from @USART_DEVICE_MODES
-	uint8_t USART_BaudRate;						// see values from @USART_BAUD_RATES
+	uint32_t USART_BaudRate;						// see values from @USART_BAUD_RATES
 	uint8_t USART_NumStopBits;					// see values from @USART_NUM_STOP_BITS_VALUE
 	uint8_t USART_WordLength;					// see values from @USART_WORD_LENGTHS
 	uint8_t USART_ParityCtrl;					// see values from @USART_PARITY_CONTROL_VALUES
@@ -47,7 +47,7 @@ typedef struct {
  * Baud Rate Options
  */
 #define USART_STD_BAUD_1200					1200
-#define USART_STD_BAUD_2400					400
+#define USART_STD_BAUD_2400					2400
 #define USART_STD_BAUD_9600					9600
 #define USART_STD_BAUD_19200 				19200
 #define USART_STD_BAUD_38400 				38400
@@ -125,6 +125,7 @@ void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t enable_flag);
 // Peripheral Init
 void USART_Init(USART_Handle_t *pUSARTHandle);
 void USART_DeInit(USART_RegDef_t *pUSARTx);
+void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t baudRate);
 
 // USART Reading and Writing
 void USART_TransmitData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t len);

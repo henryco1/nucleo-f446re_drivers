@@ -124,6 +124,7 @@ void USART_Init(USART_Handle_t *pUSARTHandle) {
 	pUSARTHandle->pUSARTx->CR3 = temp;
 
 	// TODO: init baud rate
+	USART_SetBaudRate(pUSARTHandle->pUSARTx, pUSARTHandle->USART_Config.USART_BaudRate);
 }
 
 /*
@@ -204,10 +205,10 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t baudRate) {
  * output: none
  */
 void USART_TransmitData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t len) {
-	// enable usart (enable UE)
-	pUSARTHandle->pUSARTx->CR1 &= (1 << USART_CR1_UE);
-	// enable transmitter (TE)
-	pUSARTHandle->pUSARTx->CR1 &= (1 << USART_CR1_TE);
+//	// enable usart (enable UE)
+//	pUSARTHandle->pUSARTx->CR1 &= (1 << USART_CR1_UE);
+//	// enable transmitter (TE)
+//	pUSARTHandle->pUSARTx->CR1 &= (1 << USART_CR1_TE);
 
 	// write data
 	while (len--) {
@@ -222,15 +223,15 @@ void USART_TransmitData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32
 			// also need to handle parity bit config
 			if (pUSARTHandle->USART_Config.USART_ParityCtrl == USART_PARITY_CTRL_DISABLE) {
 				// no parity used, therefore all 9 bits contain message data
-				*pTxBuffer += 2;
+				pTxBuffer += 2;
 			} else {
 				// otherwise, the parity bit is enabled and the HARDWARE will add the 9th bit. So only send 8 bits
-				*pTxBuffer++;
+				pTxBuffer++;
 			}
 		} else {
 			// if its just 8 bits, load a bit and increment the buffer ptr
 			pUSARTHandle->pUSARTx->DR = (*pTxBuffer & (uint8_t)0xFF);
-			*pTxBuffer++;
+			pTxBuffer++;
 		}
 	}
 	while (!USART_GetFlagStatus(pUSARTHandle->pUSARTx, USART_FLAG_TC)) {}
