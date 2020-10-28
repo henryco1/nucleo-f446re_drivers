@@ -35,15 +35,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  15 .debug_ranges 000001c0  00000000  00000000  00024628  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  00003002  00000000  00000000  000247e8  2**0
+ 16 .debug_macro  00001a4b  00000000  00000000  000247e8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   0000215d  00000000  00000000  000277ea  2**0
+ 17 .debug_line   0000215c  00000000  00000000  00026233  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    0000b7f0  00000000  00000000  00029947  2**0
+ 18 .debug_str    0000ba22  00000000  00000000  0002838f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  00035137  2**0
+ 19 .comment      0000007b  00000000  00000000  00033db1  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000007a8  00000000  00000000  000351b4  2**2
+ 20 .debug_frame  000007a8  00000000  00000000  00033e2c  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -2693,7 +2693,7 @@ uint32_t RCC_GetPLLOutputClock(void) {
  800121c:	2300      	movs	r3, #0
  800121e:	75bb      	strb	r3, [r7, #22]
 
-	temp = (RCC->PLLCFGR << 22) & 1;
+	temp = (RCC->PLLCFGR << RCC_PLLCFGR_PLLSRC) & 1;
  8001220:	4b1c      	ldr	r3, [pc, #112]	; (8001294 <RCC_GetPLLOutputClock+0x8c>)
  8001222:	685b      	ldr	r3, [r3, #4]
  8001224:	2300      	movs	r3, #0
@@ -2714,13 +2714,13 @@ uint32_t RCC_GetPLLOutputClock(void) {
  8001236:	61fb      	str	r3, [r7, #28]
 	}
 
-	plln = (RCC->PLLCFGR << 6) & 0x1FF;
+	plln = (RCC->PLLCFGR << RCC_PLLCFGR_PLLN) & 0x1FF;
  8001238:	4b16      	ldr	r3, [pc, #88]	; (8001294 <RCC_GetPLLOutputClock+0x8c>)
  800123a:	685b      	ldr	r3, [r3, #4]
  800123c:	019b      	lsls	r3, r3, #6
  800123e:	f3c3 0308 	ubfx	r3, r3, #0, #9
  8001242:	613b      	str	r3, [r7, #16]
-	pllm = (RCC->PLLCFGR << 0) & 0x3F;
+	pllm = (RCC->PLLCFGR << RCC_PLLCFGR_PLLM) & 0x3F;
  8001244:	4b13      	ldr	r3, [pc, #76]	; (8001294 <RCC_GetPLLOutputClock+0x8c>)
  8001246:	685b      	ldr	r3, [r3, #4]
  8001248:	b2db      	uxtb	r3, r3
@@ -2735,7 +2735,7 @@ uint32_t RCC_GetPLLOutputClock(void) {
  800125a:	fb02 f303 	mul.w	r3, r2, r3
  800125e:	60fb      	str	r3, [r7, #12]
 
-	temp = (RCC->PLLCFGR << 16) & 0x3;
+	temp = (RCC->PLLCFGR << RCC_PLLCFGR_PLLP) & 0x3;
  8001260:	4b0c      	ldr	r3, [pc, #48]	; (8001294 <RCC_GetPLLOutputClock+0x8c>)
  8001262:	685b      	ldr	r3, [r3, #4]
  8001264:	2300      	movs	r3, #0
@@ -2798,7 +2798,7 @@ uint32_t RCC_GetPCLK1Value(void) {
  80012cc:	681b      	ldr	r3, [r3, #0]
  80012ce:	607b      	str	r3, [r7, #4]
 
-	temp = (RCC->CFGR << 2) & 0x3;
+	temp = (RCC->CFGR << RCC_CFGR_SWS) & 0x3;
  80012d0:	4b30      	ldr	r3, [pc, #192]	; (8001394 <RCC_GetPCLK1Value+0xf4>)
  80012d2:	689b      	ldr	r3, [r3, #8]
  80012d4:	b2db      	uxtb	r3, r3
@@ -2835,7 +2835,7 @@ uint32_t RCC_GetPCLK1Value(void) {
  800130a:	6378      	str	r0, [r7, #52]	; 0x34
 	}
 
-	temp = (RCC->CFGR << 4) & 0xF;
+	temp = (RCC->CFGR << RCC_CFGR_HPRE) & 0xF;
  800130c:	4b21      	ldr	r3, [pc, #132]	; (8001394 <RCC_GetPCLK1Value+0xf4>)
  800130e:	689b      	ldr	r3, [r3, #8]
  8001310:	b2db      	uxtb	r3, r3
@@ -2859,7 +2859,7 @@ uint32_t RCC_GetPCLK1Value(void) {
  800133a:	f853 3c30 	ldr.w	r3, [r3, #-48]
  800133e:	633b      	str	r3, [r7, #48]	; 0x30
 
-	temp = (RCC->CFGR << 10) & 0x7;
+	temp = (RCC->CFGR << RCC_CFGR_PPRE1) & 0x7;
  8001340:	4b14      	ldr	r3, [pc, #80]	; (8001394 <RCC_GetPCLK1Value+0xf4>)
  8001342:	689b      	ldr	r3, [r3, #8]
  8001344:	2300      	movs	r3, #0

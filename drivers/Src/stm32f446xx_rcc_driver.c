@@ -32,7 +32,7 @@ uint32_t RCC_GetPLLOutputClock(void) {
 	uint8_t pllp, pllm = 0;
 	uint8_t temp = 0;
 
-	temp = (RCC->PLLCFGR << 22) & 1;
+	temp = (RCC->PLLCFGR << RCC_PLLCFGR_PLLSRC) & 1;
 	if (temp) {
 		// HSI clock selected as PLL
 		clk_src = 16000000;
@@ -41,12 +41,12 @@ uint32_t RCC_GetPLLOutputClock(void) {
 		clk_src = 8000000;
 	}
 
-	plln = (RCC->PLLCFGR << 6) & 0x1FF;
-	pllm = (RCC->PLLCFGR << 0) & 0x3F;
+	plln = (RCC->PLLCFGR << RCC_PLLCFGR_PLLN) & 0x1FF;
+	pllm = (RCC->PLLCFGR << RCC_PLLCFGR_PLLM) & 0x3F;
 
 	clk_vco = clk_src * (plln / pllm);
 
-	temp = (RCC->PLLCFGR << 16) & 0x3;
+	temp = (RCC->PLLCFGR << RCC_PLLCFGR_PLLP) & 0x3;
 	pllp = pll_div_factors[temp];
 	clk_pll = clk_vco / pllp;
 
@@ -66,7 +66,7 @@ uint32_t RCC_GetPCLK1Value(void) {
 	uint32_t hpre_div_factors[8] = {2, 4, 8, 16, 64, 128, 256, 512};
 	uint8_t ppre1_div_factors[4] = {2, 4, 8, 16};
 
-	temp = (RCC->CFGR << 2) & 0x3;
+	temp = (RCC->CFGR << RCC_CFGR_SWS) & 0x3;
 
 	if (temp == 0) {
 		// HSI oscillator
@@ -79,11 +79,11 @@ uint32_t RCC_GetPCLK1Value(void) {
 		clk_sys = RCC_GetPLLOutputClock();
 	}
 
-	temp = (RCC->CFGR << 4) & 0xF;
+	temp = (RCC->CFGR << RCC_CFGR_HPRE) & 0xF;
 	if (temp < 8) clk_ahb = 1;
 	else clk_ahb = hpre_div_factors[temp - 8];
 
-	temp = (RCC->CFGR << 10) & 0x7;
+	temp = (RCC->CFGR << RCC_CFGR_PPRE1) & 0x7;
 	if (temp < 4) clk_apb = 1;
 	else clk_apb = ppre1_div_factors[temp - 4];
 
@@ -98,13 +98,13 @@ uint32_t RCC_GetPCLK1Value(void) {
  * output: a pll clock value to be used as a PCLK
  */
 uint32_t RCC_GetPCLK2Value(void) {
-	uint32_t clk_sys, clk_ahb = 0, clk_pclk1;
+	uint32_t clk_sys, clk_ahb = 0, clk_pclk2;
 	uint8_t clk_apb = 0;
 	uint8_t temp = 0;
 	uint32_t hpre_div_factors[8] = {2, 4, 8, 16, 64, 128, 256, 512};
-	uint8_t ppre1_div_factors[4] = {2, 4, 8, 16};
+	uint8_t ppre2_div_factors[4] = {2, 4, 8, 16};
 
-	temp = (RCC->CFGR << 2) & 0x3;
+	temp = (RCC->CFGR << RCC_CFGR_SWS) & 0x3;
 
 	if (temp == 0) {
 		// HSI oscillator
@@ -117,14 +117,14 @@ uint32_t RCC_GetPCLK2Value(void) {
 		clk_sys = RCC_GetPLLOutputClock();
 	}
 
-	temp = (RCC->CFGR << 4) & 0xF;
+	temp = (RCC->CFGR << RCC_CFGR_HPRE) & 0xF;
 	if (temp < 8) clk_ahb = 1;
 	else clk_ahb = hpre_div_factors[temp - 8];
 
-	temp = (RCC->CFGR << 10) & 0x7;
+	temp = (RCC->CFGR << RCC_CFGR_PPRE2) & 0x7;
 	if (temp < 4) clk_apb = 1;
-	else clk_apb = ppre1_div_factors[temp - 4];
+	else clk_apb = ppre2_div_factors[temp - 4];
 
-	clk_pclk1 = (clk_sys / clk_ahb) / clk_apb;
-	return clk_pclk1;
+	clk_pclk2 = (clk_sys / clk_ahb) / clk_apb;
+	return clk_pclk2;
 }

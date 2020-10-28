@@ -623,6 +623,51 @@ typedef struct {
 #define USART_GTPR_GT			0
 #define USART_GTPR_PSC			8
 
+/******************************
+ * RCC Peripheral Bit Positions
+ ******************************/
+/*
+ *  clock control register bit positions
+ */
+#define RCC_CR_HSION			0
+#define RCC_CR_HSIRDY			1
+#define RCC_CR_HSITRIM			3
+#define RCC_CR_HSICAL			8
+#define RCC_CR_HSEON			16
+#define RCC_CR_HSERDY			17
+#define RCC_CR_HSIBYP			18
+#define RCC_CR_CSSON			19
+#define RCC_CR_PLLON			24
+#define RCC_CR_PLLRDY			25
+#define RCC_CR_PLLI2SON			26
+#define RCC_CR_PLLI2SRDY		27
+#define RCC_CR_PLLSAION			28
+#define RCC_CR_PLLSAIRDY		29
+
+/*
+ *  PLL configuration register bit positions
+ */
+#define RCC_PLLCFGR_PLLM		0
+#define RCC_PLLCFGR_PLLN		6
+#define RCC_PLLCFGR_PLLP		16
+#define RCC_PLLCFGR_PLLSRC		22
+#define RCC_PLLCFGR_PLLQ		24
+#define RCC_PLLCFGR_PLLR		28
+
+/*
+ *  configuration register bit positions
+ */
+#define RCC_CFGR_SW				0
+#define RCC_CFGR_SWS			2
+#define RCC_CFGR_HPRE			4
+#define RCC_CFGR_PPRE1			10
+#define RCC_CFGR_PPRE2			13
+#define RCC_CFGR_RTCPRE			16
+#define RCC_CFGR_MCO1			21
+#define RCC_CFGR_MCO1PRE		24
+#define RCC_CFGR_MCO2			27
+#define RCC_CFGR_MCO2PRE		30
+
 #include "stm32f446xx_gpio_driver.h"
 #include "stm32f446xx_spi_driver.h"
 #include "stm32f446xx_rcc_driver.h"

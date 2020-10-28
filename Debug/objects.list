@@ -1,5 +1,5 @@
-"Src/i2c_slave_tx_string2.o"
 "Src/sysmem.o"
+"Src/uart_master_tx_test.o"
 "drivers/Src/stm32f446xx_gpio_driver.o"
 "drivers/Src/stm32f446xx_i2c_driver.o"
 "drivers/Src/stm32f446xx_rcc_driver.o"
