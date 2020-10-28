@@ -153,6 +153,43 @@ void USART_DeInit(USART_RegDef_t *pUSARTx) {
 	}
 }
 
+/*
+ * USART Set Baud Rate
+ * desc: configures the baud rate through the BRR mantissa and fraction for standard USART
+ * input1: USART register struct
+ * input2: desired baud rate value
+ * output: none
+ */
+void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t baudRate) {
+	uint32_t PCLKx = RCC_GetPCLK1Value();
+	uint32_t usartdiv;
+	uint32_t mantissa;
+	uint32_t fraction;
+	uint32_t temp = 0;
+
+	if (pUSARTx->CR1 & ~(1 << USART_CR1_OVER8)) {
+		// 16 bit oversampling rate case (value = 0)
+		usartdiv = ((PCLKx) / (baudRate * (2 - 0) * 8)) * 100;
+	} else {
+		// 8 bit oversampling rate case
+		usartdiv = ((PCLKx) / (baudRate * (2 - 1) * 8)) * 100;
+	}
+
+	mantissa = usartdiv / 100;
+	fraction = usartdiv - (mantissa * 100);
+
+	if (pUSARTx->CR1 & ~(1 << USART_CR1_OVER8)) {
+		// 16 bit fraction data write
+		fraction = ((fraction * 8) + 50) / 100;
+		temp |= ((mantissa << 4) | (fraction & (uint8_t)0x07));
+	} else {
+		// 8 bit fraction data write
+		fraction = ((fraction * 16) + 50) / 100;
+		temp |= ((mantissa << 4) | (fraction & (uint8_t)0xFF));
+	}
+	pUSARTx->BRR = temp;
+}
+
 /*****************************
  * Data Transmission Functions
  *****************************/
@@ -166,7 +203,7 @@ void USART_DeInit(USART_RegDef_t *pUSARTx) {
  * input5: an enable/disable flag for repeated starts
  * output: none
  */
-void USART_TransmitData(USART_Handle_t pUSARTHandle, uint8_t *pTxBuffer, uint32_t len) {
+void USART_TransmitData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t len) {
 	// enable usart (enable UE)
 	pUSARTHandle->pUSARTx->CR1 &= (1 << USART_CR1_UE);
 	// enable transmitter (TE)
@@ -179,26 +216,23 @@ void USART_TransmitData(USART_Handle_t pUSARTHandle, uint8_t *pTxBuffer, uint32_
 
 		// handle 9-bit and 8-bit frame
 		if (pUSARTHandle->USART_Config.USART_WordLength == USART_WORD_LENGTH_9_BITS) {
-			uint16_t *largeData = (uint16_t*) pxTxBuffer;
+			uint16_t *largeData = (uint16_t*) pTxBuffer;
 			pUSARTHandle->pUSARTx->DR = (*largeData & (uint16_t)0x01FF);
 
 			// also need to handle parity bit config
 			if (pUSARTHandle->USART_Config.USART_ParityCtrl == USART_PARITY_CTRL_DISABLE) {
 				// no parity used, therefore all 9 bits contain message data
 				*pTxBuffer += 2;
-			}
-			else {
+			} else {
 				// otherwise, the parity bit is enabled and the HARDWARE will add the 9th bit. So only send 8 bits
-				*pTxBuffer++
+				*pTxBuffer++;
 			}
-		}
-		else {
+		} else {
 			// if its just 8 bits, load a bit and increment the buffer ptr
 			pUSARTHandle->pUSARTx->DR = (*pTxBuffer & (uint8_t)0xFF);
 			*pTxBuffer++;
 		}
 	}
-
 	while (!USART_GetFlagStatus(pUSARTHandle->pUSARTx, USART_FLAG_TC)) {}
 }
 
@@ -212,16 +246,16 @@ void USART_TransmitData(USART_Handle_t pUSARTHandle, uint8_t *pTxBuffer, uint32_
  * input5: an enable/disable flag for repeated starts
  * output: none
  */
-void USART_ReceiveData(USART_Handle_t pUSARTHandle, uint8_t *pRxBuffer, uint32_t len) {
+void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t len) {
 	// enable receiver (RE)
 }
 
 uint8_t USART_TransmitDataIT(USART_Handle_t pUSARTHandle, uint8_t *pTxBuffer, uint32_t len) {
-	uint8_t out;
+	uint8_t out = 0;
 	return out;
 }
 uint8_t USART_ReceiveDataIT(USART_Handle_t pUSARTHandle, uint8_t *pRxBuffer, uint32_t len) {
-	uint8_t out;
+	uint8_t out = 0;
 	return out;
 }
 /*********************

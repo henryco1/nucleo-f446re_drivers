@@ -1,0 +1,3 @@
+stm32f446xx_rcc_driver.c:18:10:RCC_GetPLLOutputClock	40	static
+stm32f446xx_rcc_driver.c:62:10:RCC_GetPCLK1Value	72	static
+stm32f446xx_rcc_driver.c:100:10:RCC_GetPCLK2Value	72	static
