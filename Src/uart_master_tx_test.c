@@ -14,7 +14,7 @@
 //#define I2C_SLAVE_ADDR 		0x69
 
 // Globals
-USART_Handle_t USART2Handle;
+USART_Handle_t UART4Handle;
 uint8_t commandCode;
 uint32_t data_len = 0;
 //uint8_t TxBuffer[] = "Hello World.....I am a very nice robotic machine. I can help with reading books, brewing coffee, and carrying heavy items. I hope that we can become good friends...unless 0.0 uwu 0.0 uwu 0.0 uwu 0.0 uwu 0.0 uwu 0.0 uwu 0.0 uwu 0.0 :flushed:";
@@ -27,39 +27,39 @@ void delay(int value) {
 }
 
 /*
- * PA2 = TX
- * PA3 = RX
+ * PC10 = TX
+ * PC11 = RX
  * Alt Func mode = 7
  */
-void USART2_GPIO_Init(void) {
+void UART4_GPIO_Init(void) {
 	GPIO_Handle_t USARTPins;
-	USARTPins.pGPIOx = GPIOA;
+	USARTPins.pGPIOx = GPIOC;
 
 	USARTPins.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
-	USARTPins.GPIO_PinConfig.GPIO_PinAltFuncMode = 7;
+	USARTPins.GPIO_PinConfig.GPIO_PinAltFuncMode = 8;
 	USARTPins.GPIO_PinConfig.GPIO_PinOPType = GPIO_OTYPE_PUSH_PULL; // why push pull
 	USARTPins.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_PULL_UP;
 	USARTPins.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
 
 	// TX
-	USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_2;
+	USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_10;
 	GPIO_Init(&USARTPins);
 
 	// RX
-	USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_3;
+	USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_11;
 	GPIO_Init(&USARTPins);
 }
 
-void USART2_Init(void) {
-	USART2Handle.pUSARTx = USART2;
-	USART2Handle.USART_Config.USART_BaudRate = USART_STD_BAUD_115200;
-	USART2Handle.USART_Config.USART_DeviceMode = USART_DEVICE_MODE_TX_ONLY;
-	USART2Handle.USART_Config.USART_HwFlowCtrl = USART_HW_FLOW_CTRL_NONE;
-	USART2Handle.USART_Config.USART_NumStopBits = USART_NUM_STOP_BITS_1;
-	USART2Handle.USART_Config.USART_ParityCtrl = USART_PARITY_CTRL_DISABLE;
-	USART2Handle.USART_Config.USART_WordLength = USART_WORD_LENGTH_8_BITS;
+void UART4_Init(void) {
+	UART4Handle.pUSARTx = UART4;
+	UART4Handle.USART_Config.USART_BaudRate = USART_STD_BAUD_115200;
+	UART4Handle.USART_Config.USART_DeviceMode = USART_DEVICE_MODE_TX_ONLY;
+	UART4Handle.USART_Config.USART_HwFlowCtrl = USART_HW_FLOW_CTRL_NONE;
+	UART4Handle.USART_Config.USART_NumStopBits = USART_NUM_STOP_BITS_1;
+	UART4Handle.USART_Config.USART_ParityCtrl = USART_PARITY_CTRL_DISABLE;
+	UART4Handle.USART_Config.USART_WordLength = USART_WORD_LENGTH_8_BITS;
 
-	USART_Init(&USART2Handle);
+	USART_Init(&UART4Handle);
 }
 
 void GPIO_Button_Init(void) {
@@ -80,9 +80,9 @@ int main(void) {
 //	printf("Semihosting successful\n");
 	data_len = strlen((char*)msg);
 	GPIO_Button_Init();
-	USART2_GPIO_Init();
-	USART2_Init();
-	USART_PeripheralControl(USART2, ENABLE);
+	UART4_GPIO_Init();
+	UART4_Init();
+	USART_PeripheralControl(UART4, ENABLE);
 
 	while (1) {
 		// wait for button press
@@ -90,7 +90,7 @@ int main(void) {
 		// avoid button de-bounce
 		delay(200000);
 
-		USART_TransmitData(&USART2Handle, (uint8_t*)msg, data_len);
+		USART_TransmitData(&UART4Handle, (uint8_t*)msg, data_len);
 	}
 	return 0;
 }
@@ -133,9 +133,9 @@ int main(void) {
 //}
 //
 //void I2C1_EV_IRQHandler(void) {
-//	I2C_EV_IRQHandling(&USART2Handle);
+//	I2C_EV_IRQHandling(&UART4Handle);
 //}
 //
 //void I2C1_ER_IRQHandler(void) {
-//	I2C_ER_IRQHandling(&USART2Handle);
+//	I2C_ER_IRQHandling(&UART4Handle);
 //}

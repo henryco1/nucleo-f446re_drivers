@@ -74,7 +74,7 @@ void USART_Init(USART_Handle_t *pUSARTHandle) {
 		temp |= (1 << USART_CR1_TE);
 	} else if (pUSARTHandle->USART_Config.USART_DeviceMode == USART_DEVICE_MODE_RX_ONLY) {
 		temp |= (1 << USART_CR1_RE);
-	} else {
+	} else if (pUSARTHandle->USART_Config.USART_DeviceMode == USART_DEVICE_MODE_TX_RX) {
 		temp |= (1 << USART_CR1_TE);
 		temp |= (1 << USART_CR1_RE);
 	}
@@ -162,32 +162,41 @@ void USART_DeInit(USART_RegDef_t *pUSARTx) {
  * output: none
  */
 void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t baudRate) {
-	uint32_t PCLKx = RCC_GetPCLK1Value();
+	uint32_t PCLKx;
 	uint32_t usartdiv;
 	uint32_t mantissa;
 	uint32_t fraction;
 	uint32_t temp = 0;
 
+	if (pUSARTx == USART1 || pUSARTx == USART6) {
+		PCLKx = RCC_GetPCLK2Value();
+	} else {
+		PCLKx = RCC_GetPCLK1Value();
+	}
+
 	if (pUSARTx->CR1 & ~(1 << USART_CR1_OVER8)) {
 		// 16 bit oversampling rate case (value = 0)
-		usartdiv = ((PCLKx) / (baudRate * (2 - 0) * 8)) * 100;
+		usartdiv = ((PCLKx * 100) / (baudRate * (2 - 0) * 8));
 	} else {
 		// 8 bit oversampling rate case
-		usartdiv = ((PCLKx) / (baudRate * (2 - 1) * 8)) * 100;
+		usartdiv = ((PCLKx * 100) / (baudRate * (2 - 1) * 8));
 	}
 
 	mantissa = usartdiv / 100;
+	temp |= mantissa << 4;
+
 	fraction = usartdiv - (mantissa * 100);
 
-	if (pUSARTx->CR1 & ~(1 << USART_CR1_OVER8)) {
-		// 16 bit fraction data write
-		fraction = ((fraction * 8) + 50) / 100;
-		temp |= ((mantissa << 4) | (fraction & (uint8_t)0x07));
+	if(pUSARTx->CR1 & ~( 1 << USART_CR1_OVER8)) {
+		//over sampling by 16
+		fraction = ((( fraction * 16) + 50) / 100 ) & ((uint8_t)0x0F);
 	} else {
-		// 8 bit fraction data write
-		fraction = ((fraction * 16) + 50) / 100;
-		temp |= ((mantissa << 4) | (fraction & (uint8_t)0xFF));
+		//OVER8 = 1 , over sampling by 8
+		fraction = ((( fraction * 8) + 50) / 100 )& ((uint8_t)0x07);
+
 	}
+	temp |= fraction;
+
 	pUSARTx->BRR = temp;
 }
 
