@@ -14,7 +14,7 @@
  ***************************************/
 typedef struct {
 	uint8_t USART_DeviceMode;					// see values from @USART_DEVICE_MODES
-	uint32_t USART_BaudRate;						// see values from @USART_BAUD_RATES
+	uint32_t USART_BaudRate;					// see values from @USART_BAUD_RATES
 	uint8_t USART_NumStopBits;					// see values from @USART_NUM_STOP_BITS_VALUE
 	uint8_t USART_WordLength;					// see values from @USART_WORD_LENGTHS
 	uint8_t USART_ParityCtrl;					// see values from @USART_PARITY_CONTROL_VALUES
@@ -26,8 +26,13 @@ typedef struct {
  ********************************/
 typedef struct {
 	USART_RegDef_t *pUSARTx; 					// base address pointer
-	USART_Config_t USART_Config; 			// holds USART pin configuration settings
-
+	USART_Config_t USART_Config; 				// holds USART pin configuration settings
+	uint8_t *pTxBuffer;							// holds the txbuffer addr
+	uint8_t *pRxBuffer;							// holds the rxbuffer addr
+	uint32_t TxLen;								// holds the tx msg length
+	uint32_t RxLen;								// holds the rx msg length
+	uint8_t TxState;							// holds info on the communication state
+	uint8_t RxState;							// holds info on the communication state
 } USART_Handle_t;
 
 /**********************
@@ -130,14 +135,14 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t baudRate);
 // USART Reading and Writing
 void USART_TransmitData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t len);
 void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t len);
-uint8_t USART_TransmitDataIT(USART_Handle_t pUSARTHandle, uint8_t *pTxBuffer, uint32_t len);
-uint8_t USART_ReceiveDataIT(USART_Handle_t pUSARTHandle, uint8_t *pRxBuffer, uint32_t len);
+uint8_t USART_TransmitDataIT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t len);
+uint8_t USART_ReceiveDataIT(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t len);
 
 
 // IRQ Config and ISR Handling
 void USART_IRQInterruptConfig(uint8_t IRQNumber, uint8_t enable_flag);
 void USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
-void USART_IRQHandling(uint8_t pinNumber); // note that the interrupt for that USART will be triggered and it knows what pin was activated
+void USART_IRQHandling(USART_Handle_t *pUSARTHandle); // note that the interrupt for that USART will be triggered and it knows what pin was activated
 
 // Data Transmission Helpers
 uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint32_t flag_name);

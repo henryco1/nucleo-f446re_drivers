@@ -21,29 +21,29 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   8 .data         00000400  20000000  08000fec  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          00000034  20000400  080013ec  00020400  2**2
+  9 .bss          00000048  20000400  080013ec  00020400  2**2
                   ALLOC
- 10 ._user_heap_stack 00000604  20000434  080013ec  00020434  2**0
+ 10 ._user_heap_stack 00000600  20000448  080013ec  00020448  2**0
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00020400  2**0
                   CONTENTS, READONLY
- 12 .debug_info   000036cb  00000000  00000000  00020430  2**0
+ 12 .debug_info   0000379a  00000000  00000000  00020430  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 00000839  00000000  00000000  00023afb  2**0
+ 13 .debug_abbrev 0000086b  00000000  00000000  00023bca  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 00000190  00000000  00000000  00024338  2**3
+ 14 .debug_aranges 000001a0  00000000  00000000  00024438  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 00000148  00000000  00000000  000244c8  2**3
+ 15 .debug_ranges 00000158  00000000  00000000  000245d8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  00001a93  00000000  00000000  00024610  2**0
+ 16 .debug_macro  00001a93  00000000  00000000  00024730  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00001f47  00000000  00000000  000260a3  2**0
+ 17 .debug_line   00001fbd  00000000  00000000  000261c3  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    0000b871  00000000  00000000  00027fea  2**0
+ 18 .debug_str    0000b8e2  00000000  00000000  00028180  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  0003385b  2**0
+ 19 .comment      0000007b  00000000  00000000  00033a62  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00000588  00000000  00000000  000338d8  2**2
+ 20 .debug_frame  000005d0  00000000  00000000  00033ae0  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1934,9 +1934,9 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t baudRate) {
  8000e08:	51eb851f 	.word	0x51eb851f
 
 08000e0c <USART_TransmitData>:
- * input3: the size of the message to be sent
- * input4: uint8 slave address data
- * input5: an enable/disable flag for repeated starts
+ * input1: a pointer to an USART handle struct
+ * input2: a uint8 pointer to a buffer
+ * input3: the size of the message to send
  * output: none
  */
 void USART_TransmitData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t len) {
@@ -2208,7 +2208,7 @@ LoopForever:
   ldr r2, =_sbss
  8000f40:	20000400 	.word	0x20000400
   ldr r4, =_ebss
- 8000f44:	20000434 	.word	0x20000434
+ 8000f44:	20000448 	.word	0x20000448
 
 08000f48 <ADC_IRQHandler>:
  * @retval : None

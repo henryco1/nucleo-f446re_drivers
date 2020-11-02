@@ -6,6 +6,9 @@
 
 #include "stm32f446xx_USART_driver.h"
 
+static void USART_HandleTXEInterrupt(USART_Handle_t *pI2CHandle);
+static void USART_HandleRXNEInterrupt(USART_Handle_t *pI2CHandle);
+
 /*
  * USART Peripheral Clock Control
  * desc: enables the USART peripheral clock for a specific USART peripheral
@@ -204,13 +207,11 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t baudRate) {
  * Data Transmission Functions
  *****************************/
 /*
- * USART Master Send Data
- * desc: a function for a master device to send data through USART to a slave device
+ * USART Transmit Data
+ * desc: function for USART data transmission
  * input1: a pointer to an USART handle struct
  * input2: a uint8 pointer to a buffer
- * input3: the size of the message to be sent
- * input4: uint8 slave address data
- * input5: an enable/disable flag for repeated starts
+ * input3: the size of the message to send
  * output: none
  */
 void USART_TransmitData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t len) {
@@ -247,26 +248,72 @@ void USART_TransmitData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32
 }
 
 /*
- * USART Master Receive Data
- * desc: a function for a master device to receive data through USART from a slave device
+ * USART Receive Data
+ * desc: function for USART data reception
  * input1: a pointer to an USART handle struct
  * input2: a uint8 pointer to a buffer
- * input3: the size of the message to be sent
- * input4: uint8 slave address data
- * input5: an enable/disable flag for repeated starts
+ * input3: the size of the message to be received
  * output: none
  */
 void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t len) {
 	// enable receiver (RE)
+	while(len--) {
+		// wait for the data transmission to finish
+		while (!USART_GetFlagStatus(pUSARTHandle->pUSARTx, USART_FLAG_RXNE)) {}
+
+		// handle 9-bit and 8-bit frame
+		if (pUSARTHandle->USART_Config.USART_WordLength == USART_WORD_LENGTH_9_BITS) {
+
+			// if parity is disabled, all 9 bits need to be gathered
+			// otherwise, the 9th bit will be a parity bit and only 8 bits will be relevant data
+			if (pUSARTHandle->USART_Config.USART_ParityCtrl == USART_PARITY_CTRL_DISABLE) {
+				*((uint16_t*)pRxBuffer) = (pUSARTHandle->pUSARTx->DR & (uint16_t)0x1FF);
+				pRxBuffer += 2;
+			} else {
+				*pRxBuffer = (pUSARTHandle->pUSARTx->DR & (uint16_t)0xFF);
+				pRxBuffer++;
+			}
+		} else {
+			// for 8 bit data frames, if parity is disabled, we want to read all 8 bits
+			// otherwise, the 8th bit is a parity bit, and 7 bits will be relevant data
+			if (pUSARTHandle->USART_Config.USART_ParityCtrl == USART_PARITY_CTRL_DISABLE) {
+				*pRxBuffer = (pUSARTHandle->pUSARTx->DR & (uint8_t)0xFF);
+			} else {
+				*pRxBuffer = (pUSARTHandle->pUSARTx->DR & (uint8_t)0x7F);
+			}
+			pRxBuffer++;
+		}
+	}
+	while (!USART_GetFlagStatus(pUSARTHandle->pUSARTx, USART_FLAG_TC)) {}
 }
 
-uint8_t USART_TransmitDataIT(USART_Handle_t pUSARTHandle, uint8_t *pTxBuffer, uint32_t len) {
-	uint8_t out = 0;
-	return out;
+// trigger an uart transmit interrupt
+uint8_t USART_TransmitDataIT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t len) {
+	uint8_t busy_state = pUSARTHandle->TxState;
+	if((busy_state != USART_BUSY_IN_TX)) {
+		pUSARTHandle->pTxBuffer = pTxBuffer;
+		pUSARTHandle->TxLen = len;
+		pUSARTHandle->TxState = USART_BUSY_IN_TX;
+
+		// trigger the start condition and enable the interrupts, which generates an interrupt
+		pUSARTHandle->pUSARTx->CR1 |= ( 1 << USART_CR1_TXEIE);
+		pUSARTHandle->pUSARTx->CR1 |= ( 1 << USART_CR1_TCIE);
+	}
+	return busy_state;
 }
-uint8_t USART_ReceiveDataIT(USART_Handle_t pUSARTHandle, uint8_t *pRxBuffer, uint32_t len) {
-	uint8_t out = 0;
-	return out;
+
+// trigger an uart receive interrupt
+uint8_t USART_ReceiveDataIT(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t len) {
+	uint8_t busy_state = pUSARTHandle->RxState;
+	if((busy_state != USART_BUSY_IN_RX)) {
+		pUSARTHandle->pRxBuffer = pRxBuffer;
+		pUSARTHandle->RxLen = len;
+		pUSARTHandle->RxState = USART_BUSY_IN_RX;
+
+		// trigger the start condition and enable the interrupts, which generates an interrupt
+		pUSARTHandle->pUSARTx->CR1 |= ( 1 << USART_CR1_RXNEIE);
+	}
+	return busy_state;
 }
 /*********************
  * Interrupt Functions
@@ -321,10 +368,72 @@ void USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority) {
  * input1: an USART handle containing information to handle IRQ events
  * output: none
  */
-void USART_IRQHandling(uint8_t pinNumber) {
-	// clear the exti pr register corresponding to the pin number
-	if (EXTI->PR & ( 1 << pinNumber )) {
-		EXTI->PR |= ( 1 << pinNumber);
+void USART_IRQHandling(USART_Handle_t *pUSARTHandle) {
+	uint8_t temp1, temp2;
+
+	// txe handler
+	temp1 = pUSARTHandle->pUSARTx->SR & (1 << USART_SR_TXE);
+	temp2 = pUSARTHandle->pUSARTx->SR & (1 << USART_CR1_TXEIE);
+	if (temp1 && temp2) {
+		USART_HandleTXEInterrupt(pUSARTHandle);
+	}
+
+	// rxne handler
+	temp1 = pUSARTHandle->pUSARTx->SR & (1 << USART_SR_RXNE);
+	temp2 = pUSARTHandle->pUSARTx->SR & (1 << USART_CR1_RXNEIE);
+	if (temp1 && temp2) {
+		USART_HandleRXNEInterrupt(pUSARTHandle);
+	}
+
+	// ore handler
+	temp1 = pUSARTHandle->pUSARTx->SR & (1 << USART_SR_ORE);
+	temp2 = pUSARTHandle->pUSARTx->SR & (1 << USART_CR1_RXNEIE);
+	if (temp1 && temp2) {
+//		usart_ore_interrupt_handle();
+	}
+
+	// pe handler
+	temp1 = pUSARTHandle->pUSARTx->SR & (1 << USART_SR_PE);
+	temp2 = pUSARTHandle->pUSARTx->SR & (1 << USART_CR1_PEIE);
+	if (temp1 && temp2) {
+//		usart_pe_interrupt_handle();
+	}
+
+	// cts handler
+	temp1 = pUSARTHandle->pUSARTx->SR & (1 << USART_SR_CTS);
+	temp2 = pUSARTHandle->pUSARTx->SR & (1 << USART_CR3_CTSIE);
+	if (temp1 && temp2) {
+//		usart_cts_interrupt_handle();
+	}
+
+	// tc handler
+	temp1 = pUSARTHandle->pUSARTx->SR & (1 << USART_SR_TC);
+	temp2 = pUSARTHandle->pUSARTx->SR & (1 << USART_CR1_TCIE);
+	if (temp1 && temp2) {
+//		usart_tc_interrupt_handle();
+	}
+
+	// idle handler
+	temp1 = pUSARTHandle->pUSARTx->SR & (1 << USART_SR_IDLE);
+	temp2 = pUSARTHandle->pUSARTx->SR & (1 << USART_CR1_IDLEIE);
+	if (temp1 && temp2) {
+//		usart_idle_interrupt_handle();
+	}
+
+	// lbdl handler
+	temp1 = pUSARTHandle->pUSARTx->SR & (1 << USART_CR2_LBDL);
+	temp2 = pUSARTHandle->pUSARTx->SR & (1 << USART_CR2_LBDIE);
+	if (temp1 && temp2) {
+//		usart_lbdl_interrupt_handle();
+	}
+
+	// eie handler
+	uint8_t NF = pUSARTHandle->pUSARTx->SR & (1 << USART_SR_NF);
+	uint8_t FE = pUSARTHandle->pUSARTx->SR & (1 << USART_SR_FE);
+	uint8_t PE = pUSARTHandle->pUSARTx->SR & (1 << USART_SR_PE);
+	temp2 = pUSARTHandle->pUSARTx->SR & (1 << USART_CR3_EIE);
+	if ((NF || FE || PE) && temp2) {
+//		usart_eie_interrupt_handle();
 	}
 }
 
@@ -368,4 +477,31 @@ void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t enable_flag) {
 	else {
 		pUSARTx->CR1 &= ~(1 << USART_CR1_UE);
 	}
+}
+
+/******************
+ * Static Functions
+ ******************/
+/*
+ * I2C Master Handle TXE Interrupt
+ * desc: interrupt function that handles I2C data transmission
+ * input1: pointer to an I2C handle struct
+ * output: none
+ */
+static void USART_HandleTXEInterrupt(USART_Handle_t *pUSARTHandle) {
+	if (pUSARTHandle->TxLen > 0) {
+		pUSARTHandle->pUSARTx->DR = *(pUSARTHandle->pTxBuffer);
+		pUSARTHandle->pTxBuffer++;
+		pUSARTHandle->TxLen--;
+	}
+}
+
+/*
+ * I2C Master Handle RNXE Interrupt
+ * desc: interrupt function that handles I2C data reception
+ * input1: pointer to an I2C handle struct
+ * output: none
+ */
+static void USART_HandleRXNEInterrupt(USART_Handle_t *pI2CHandle) {
+
 }
