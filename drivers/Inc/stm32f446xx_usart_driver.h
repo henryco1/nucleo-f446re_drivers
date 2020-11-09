@@ -148,5 +148,8 @@ void USART_IRQHandling(USART_Handle_t *pUSARTHandle); // note that the interrupt
 uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint32_t flag_name);
 void USART_ClearFlagStatus(USART_RegDef_t *pUSARTx, uint32_t flag_name);
 void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t enable_flag);
+void USART_CloseReception(USART_Handle_t *pUSARTHandle);
+void USART_CloseTransmission(USART_Handle_t *pUSARTHandle);
+void USART_ApplicationEventCallback(USART_Handle_t *pUSARTHandle,uint8_t AppEv);
 
 #endif /* INC_STM32F446XX_USART_DRIVER_H_ */

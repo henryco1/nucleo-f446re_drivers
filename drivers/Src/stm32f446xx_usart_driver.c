@@ -287,7 +287,14 @@ void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_
 	while (!USART_GetFlagStatus(pUSARTHandle->pUSARTx, USART_FLAG_TC)) {}
 }
 
-// trigger an uart transmit interrupt
+/*
+ * USART Send Data Non-Blocking
+ * desc: sends data to the USART transmit buffer via a non-blocking call using interrupts
+ * input1: USART register struct mapped to the USART base address
+ * input2: a buffer for holding information that goes into the txbuffer
+ * input3: the size of the transmission in bytes
+ * output: USART peripheral state
+ */
 uint8_t USART_TransmitDataIT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t len) {
 	uint8_t busy_state = pUSARTHandle->TxState;
 	if((busy_state != USART_BUSY_IN_TX)) {
@@ -302,7 +309,14 @@ uint8_t USART_TransmitDataIT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, u
 	return busy_state;
 }
 
-// trigger an uart receive interrupt
+/*
+ * USART Receive Data Non-Blocking
+ * desc: reads data from the USART transmit buffer via a non-blocking call using interrupts
+ * input1: USART register struct mapped to the USART base address
+ * input2: a buffer for holding information that goes into the rxbuffer
+ * input3: the size of the transmission in bytes
+ * output: USART peripheral state
+ */
 uint8_t USART_ReceiveDataIT(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t len) {
 	uint8_t busy_state = pUSARTHandle->RxState;
 	if((busy_state != USART_BUSY_IN_RX)) {
@@ -479,29 +493,113 @@ void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t enable_flag) {
 	}
 }
 
+/*
+ * USART transmission closing helper function
+ * desc: ends an USART transmission
+ * input1: USART_Handle_t containing data to handle data transmit
+ * output: none
+ */
+void USART_CloseTransmission(USART_Handle_t *pUSARTHandle) {
+	pUSARTHandle->pUSARTx->CR1 &= ~(1 << USART_CR1_TXEIE);
+	pUSARTHandle->pTxBuffer = NULL;
+	pUSARTHandle->TxLen = 0;
+	pUSARTHandle->TxState = USART_EVENT_IDLE;
+}
+
+/*
+ * USART reception closing helper function
+ * desc: ends USART reception
+ * input1: USART_Handle_t containing data to handle data transmit
+ * output: none
+ */
+void USART_CloseReception(USART_Handle_t *pUSARTHandle) {
+	pUSARTHandle->pUSARTx->CR1 &= (1 << USART_CR1_RXNEIE);
+	pUSARTHandle->pRxBuffer = NULL;
+	pUSARTHandle->RxLen = 0;
+	pUSARTHandle->RxState = USART_EVENT_IDLE;
+}
+
+__weak void USART_ApplicationEventCallback(USART_Handle_t *pUSARTHandle,uint8_t AppEv)
+{
+
+	//This is a weak implementation . the user application may override this function.
+}
+
 /******************
  * Static Functions
  ******************/
 /*
- * I2C Master Handle TXE Interrupt
- * desc: interrupt function that handles I2C data transmission
- * input1: pointer to an I2C handle struct
+ * USART Handle TXE Interrupt
+ * desc: interrupt function that handles USART data transmission
+ * input1: pointer to an USART handle struct
  * output: none
  */
 static void USART_HandleTXEInterrupt(USART_Handle_t *pUSARTHandle) {
 	if (pUSARTHandle->TxLen > 0) {
-		pUSARTHandle->pUSARTx->DR = *(pUSARTHandle->pTxBuffer);
-		pUSARTHandle->pTxBuffer++;
-		pUSARTHandle->TxLen--;
+		// 8 bit word length
+		if (pUSARTHandle->USART_Config.USART_WordLength == USART_WORD_LENGTH_8_BITS) {
+			pUSARTHandle->pUSARTx->DR = (*pUSARTHandle->pTxBuffer & (uint8_t)0xFF);
+			pUSARTHandle->TxLen--;
+			pUSARTHandle->pTxBuffer++;
+		}
+		else {
+			// 9 bit word length
+			pUSARTHandle->pUSARTx->DR = *((uint16_t*)pUSARTHandle->pTxBuffer & (uint16_t)0x1FF);
+
+			if (pUSARTHandle->USART_Config.USART_ParityCtrl == USART_PARITY_CTRL_DISABLE) {
+				// parity disabled
+				pUSARTHandle->TxLen--;
+				pUSARTHandle->pTxBuffer++;
+			} else {
+				// parity enabled
+				pUSARTHandle->TxLen -= 2;
+				(uint16_t*)pUSARTHandle->pTxBuffer++;
+			}
+
+		}
+		if (!pUSARTHandle->TxLen) {
+			USART_CloseTransmission(pUSARTHandle);
+			USART_ApplicationEventCallback(pUSARTHandle, USART_EVENT_TX_CMPLT);
+		}
 	}
 }
 
 /*
- * I2C Master Handle RNXE Interrupt
- * desc: interrupt function that handles I2C data reception
- * input1: pointer to an I2C handle struct
+ * USART Handle RNXE Interrupt
+ * desc: interrupt function that handles USART data reception
+ * input1: pointer to an USART handle struct
  * output: none
  */
-static void USART_HandleRXNEInterrupt(USART_Handle_t *pI2CHandle) {
+static void USART_HandleRXNEInterrupt(USART_Handle_t *pUSARTHandle) {
+	if (pUSARTHandle->RxLen > 0) {
+		// 8 bit word length
+		if (pUSARTHandle->USART_Config.USART_WordLength == USART_WORD_LENGTH_8_BITS) {
+			if (pUSARTHandle->USART_Config.USART_ParityCtrl == USART_PARITY_CTRL_DISABLE) {
+				*pUSARTHandle->pRxBuffer = (pUSARTHandle->pUSARTx->DR & (uint8_t)0xFF);
+			} else {
+				*pUSARTHandle->pRxBuffer = (pUSARTHandle->pUSARTx->DR & (uint8_t)0x7F);
+			}
+			pUSARTHandle->RxLen--;
+			pUSARTHandle->pRxBuffer++;
+		}
+		else {
+			// 9 bit word length
+			if (pUSARTHandle->USART_Config.USART_ParityCtrl == USART_PARITY_CTRL_DISABLE) {
+				// parity disabled
+				*((uint16_t*)pUSARTHandle->pRxBuffer) = (pUSARTHandle->pUSARTx->DR & (uint16_t)0x1FF);
+				pUSARTHandle->RxLen -= 2;
+				(uint16_t*)pUSARTHandle->pRxBuffer += 2;
+			} else {
+			// parity enabled
+				*pUSARTHandle->pRxBuffer = (pUSARTHandle->pUSARTx->DR & (uint16_t)0xFF);
+				pUSARTHandle->RxLen--;
+				pUSARTHandle->pRxBuffer++;
+			}
 
+		}
+		if (!pUSARTHandle->RxLen) {
+			USART_CloseTransmission(pUSARTHandle);
+			USART_ApplicationEventCallback(pUSARTHandle, USART_EVENT_RX_CMPLT);
+		}
+	}
 }
