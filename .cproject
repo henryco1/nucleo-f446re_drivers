@@ -74,12 +74,9 @@
 							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec.1096509150" name="MCU Output Converter Motorola S-rec with symbols" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec"/>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1889161902.1650630292" name="i2c_slave_tx_string2.c" rcbsApplicability="disable" resourcePath="Src/i2c_slave_tx_string2.c" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1433113868.983316053">
-						<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1433113868.983316053" name="MCU GCC Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1433113868"/>
-					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Inc"/>
-						<entry excluding="i2c_slave_tx_string2.c|i2c_slave_tx_string.c|syscalls.c|i2c_master_rx_testIT.c|i2c_master_rx_test.c|i2c_master_tx_test.c|spi_cmd_handling.c|spi_txonly_arduino_test.c|spi_tx_test.c|001led_toggle.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
+						<entry excluding="spi_tx_test.c|uart_master_tx_test.c|i2c_slave_tx_string2.c|i2c_slave_tx_string.c|syscalls.c|i2c_master_rx_testIT.c|i2c_master_rx_test.c|i2c_master_tx_test.c|spi_cmd_handling.c|001led_toggle.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
 						<entry excluding="Startup" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="drivers/Startup"/>
 					</sourceEntries>

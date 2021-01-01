@@ -16,4 +16,4 @@ stm32f446xx_usart_driver.c:502:6:USART_CloseTransmission	16	static
 stm32f446xx_usart_driver.c:515:6:USART_CloseReception	16	static
 stm32f446xx_usart_driver.c:522:13:USART_ApplicationEventCallback	16	static
 stm32f446xx_usart_driver.c:537:13:USART_HandleTXEInterrupt	16	static
-stm32f446xx_usart_driver.c:572:13:USART_HandleRXNEInterrupt	16	static
+stm32f446xx_usart_driver.c:573:13:USART_HandleRXNEInterrupt	16	static

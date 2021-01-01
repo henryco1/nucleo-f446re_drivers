@@ -544,7 +544,7 @@ static void USART_HandleTXEInterrupt(USART_Handle_t *pUSARTHandle) {
 		}
 		else {
 			// 9 bit word length
-			pUSARTHandle->pUSARTx->DR = *((uint16_t*)pUSARTHandle->pTxBuffer & (uint16_t)0x1FF);
+			pUSARTHandle->pUSARTx->DR = *((uint16_t*)pUSARTHandle->pTxBuffer) & (uint16_t)0x1FF;
 
 			if (pUSARTHandle->USART_Config.USART_ParityCtrl == USART_PARITY_CTRL_DISABLE) {
 				// parity disabled
@@ -588,7 +588,8 @@ static void USART_HandleRXNEInterrupt(USART_Handle_t *pUSARTHandle) {
 				// parity disabled
 				*((uint16_t*)pUSARTHandle->pRxBuffer) = (pUSARTHandle->pUSARTx->DR & (uint16_t)0x1FF);
 				pUSARTHandle->RxLen -= 2;
-				(uint16_t*)pUSARTHandle->pRxBuffer += 2;
+				(uint16_t*)pUSARTHandle->pRxBuffer++;
+				(uint16_t*)pUSARTHandle->pRxBuffer++;
 			} else {
 			// parity enabled
 				*pUSARTHandle->pRxBuffer = (pUSARTHandle->pUSARTx->DR & (uint16_t)0xFF);

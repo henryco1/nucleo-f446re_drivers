@@ -6,6 +6,7 @@
 
 #include "stm32f446xx.h"
 #include <string.h>
+extern void initialise_monitor_handles(void);
 
 /*
  * PUPD LED control
@@ -77,6 +78,9 @@ int main(void) {
 	char data[] = "Hello Worldd a s asd q t s cg sg  sjg biy  7 9 d9 uhf9  adj ia if ia aop eiuy oa68 89 a 9";
 	uint8_t data_size = strlen(data);
 
+	initialise_monitor_handles();
+	printf("Semihosting successful\n");
+
 	// initialization
 	GPIO_Button_Init();
 	SPI2_GPIO_Init();
@@ -85,11 +89,11 @@ int main(void) {
 
 	while (1) {
 		// wait till button press
-		while(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN_13)) {}
+//		while(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN_13)) {}
 		delay(500000);
 
 		SPI_PeripheralControl(SPI2, ENABLE);
-
+		printf("Hello world\n");
 		// slave needs to know how much data is being sent. The slave script expect 1 byte of msg length then msg data
 		SPI_SendData(SPI2, &data_size, 1);
 		SPI_SendData(SPI2, (uint8_t*)data, data_size);
